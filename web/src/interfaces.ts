@@ -1,5 +1,5 @@
 export interface ILinkInfo {
     url: string,
     name: string,
-    isEqual?: (comparedLink: ILinkInfo) => boolean
+    isEqual: (comparedLink: { url: string }) => boolean
 }

@@ -9,7 +9,7 @@ export default class LinkInfo implements ILinkInfo {
 		this.url = url;
 	}
 
-	public isEqual(comparedLink: ILinkInfo): boolean {
+	public isEqual = (comparedLink: { url: string }): boolean => {
 		return comparedLink.url === this.url;
 	}
 }
