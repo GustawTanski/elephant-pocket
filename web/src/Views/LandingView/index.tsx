@@ -1,6 +1,7 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component, ReactNode, Fragment } from "react";
 import LinkInfo from "../../Classes/LinkInfo";
 import TopBarNotLogged from "../../Components/TopBarNotLogged";
+import BackgroundNotLogged from "../../Components/BackgroundNotLogged"
 
 export default class LandingView extends Component {
 	private links: LinkInfo[];
@@ -14,6 +15,11 @@ export default class LandingView extends Component {
 		];
 	}
 	render = (): ReactNode => {
-		return <TopBarNotLogged links={this.links}/>;
+		return (
+			<Fragment>
+				<TopBarNotLogged links={this.links} />
+				<BackgroundNotLogged forceLogin>s</BackgroundNotLogged>
+			</Fragment>
+		);
 	};
 }

@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Link }from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { decorativeFont } from "../cssVariables";
+import underlineFocus from "../Atoms/underlineFocus";
 
 export default (props: any): React.ReactElement => {
 	return (
@@ -21,6 +22,9 @@ export const LogoText = styled.div`
 	a {
 		color: inherit;
 		text-decoration: none;
+		outline: 0;
+		position: relative;
+		${underlineFocus}
 	}
 
 	@media only screen and (min-width: 420px) {

@@ -5,6 +5,7 @@ import { menu } from "react-icons-kit/feather/menu";
 import { x } from "react-icons-kit/feather/x";
 
 import { fourthColor } from "../cssVariables";
+import underlineFocus from "../Atoms/underlineFocus";
 
 export interface INavButtonProps {
 	opened: boolean;
@@ -32,16 +33,16 @@ const StyledNavButton = styled.button<{ bg?: string; opened: boolean }>`
 	font-size: 1.5rem;
 	position: relative;
 	text-align: center;
-	margin: 0 1em;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	background: transparent;
 	width: ${dim}px;
 	height: ${dim}px;
-	outline: 0;
 	font-weight: 700;
 	cursor: pointer;
+	margin: 5px 1em;
+	${underlineFocus}
 
 	i {
 		transition: transform .5s;	

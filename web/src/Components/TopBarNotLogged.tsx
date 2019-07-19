@@ -24,16 +24,16 @@ export default class TopBarNotLogged extends Component<
 > {
 	state = { isNavOpened: false, isWide: window.innerWidth >= 800 };
 
-	links = [
-		new LinkInfo("About", "/about"),
-		new LinkInfo("Log in", "/login"),
-		new LinkInfo("Try it", "/register")
-	];
+	onResize = (ev: UIEvent) => {
+		this.setState({ isWide: window.innerWidth >= 800 });
+	};
 
 	componentDidMount() {
-		window.addEventListener("resize", (ev: UIEvent) => {
-			this.setState({ isWide: window.innerWidth >= 800 });
-		});
+		window.addEventListener("resize", this.onResize);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.onResize);
 	}
 
 	onNavButtonClick = (): void => {
@@ -42,14 +42,15 @@ export default class TopBarNotLogged extends Component<
 	};
 	render() {
 		const { isWide, isNavOpened } = this.state;
+		const { links } = this.props;
 		return (
 			<StyledTopBar>
 				<Logo />
 				<NavButton opened={isNavOpened} onClick={this.onNavButtonClick} />
 				<LinkList
-					links={this.links}
+					links={links}
 					showed={isWide || isNavOpened}
-					specialColor={isWide ? fourthColor :thirdColor}
+					specialColor={isWide ? fourthColor : thirdColor}
 				/>
 			</StyledTopBar>
 		);

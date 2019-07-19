@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
 import { ILinkInfo } from "../interfaces";
+import underlineFocus from "../Atoms/underlineFocus";
 
 export interface ILinkElementProps {
-	link: ILinkInfo,
+	link: ILinkInfo;
 	className?: string;
 	bgColor?: string;
 	special?: boolean;
@@ -14,7 +16,7 @@ export default (props: ILinkElementProps): React.ReactElement => {
 	const { link, ...stylingProps } = props;
 	return (
 		<StyledLink {...stylingProps}>
-			<Link to={link.url} >{link.name}</Link> 	
+			<Link to={link.url}>{link.name}</Link>
 		</StyledLink>
 	);
 };
@@ -27,8 +29,7 @@ const StyledLink = styled.li<{ special?: boolean; bgColor?: string }>`
 	width: 138px;
 	font-size: 1.5rem;
 	overflow: hidden;
-	transition: transform .5s;
-	
+	transition: transform 0.5s;
 
 	${props => {
 		if (!props.special) return "";
@@ -50,5 +51,6 @@ const StyledLink = styled.li<{ special?: boolean; bgColor?: string }>`
 	a {
 		text-decoration: none;
 		color: inherit;
+		${underlineFocus}
 	}
 `;
