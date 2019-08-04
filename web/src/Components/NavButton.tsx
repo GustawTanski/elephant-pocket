@@ -42,7 +42,8 @@ const StyledNavButton = styled.button<{ bg?: string; opened: boolean }>`
 	font-weight: 700;
 	cursor: pointer;
 	margin: 5px 1em;
-	${underlineFocus}
+	outline: 0;
+	/* ${underlineFocus} */
 
 	i {
 		transition: transform .5s;	

@@ -15,28 +15,32 @@ export interface ILinkElementProps {
 export default (props: ILinkElementProps): React.ReactElement => {
 	const { link, ...stylingProps } = props;
 	return (
-		<StyledLink {...stylingProps}>
-			<Link to={link.url}>{link.name}</Link>
+		<StyledLink {...stylingProps} to={link.url}>
+			<span>{link.name}</span>
 		</StyledLink>
 	);
 };
 
-const StyledLink = styled.li<{ special?: boolean; bgColor?: string }>`
+const StyledLink = styled(Link)<{ special?: boolean; bgColor?: string }>`
+	--multiplier: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 42px;
-	width: 138px;
-	font-size: 1.5rem;
+	height: calc(var(--multiplier) * 42px);
+	width: calc(var(--multiplier) * 138px);
+	font-size: calc(var(--multiplier) * 1.5rem);
 	overflow: hidden;
 	transition: transform 0.5s;
+	text-decoration: none;
+	color: inherit;
+	outline: 0;
 
 	${props => {
 		if (!props.special) return "";
 		else
 			return `
 			background: ${props.bgColor};
-			border-radius: 27px 0 27px 0;
+			border-radius: calc(var(--multiplier)*27px) 0 calc(var(--multiplier)*27px) 0;
 			`;
 	}}
 
@@ -46,11 +50,5 @@ const StyledLink = styled.li<{ special?: boolean; bgColor?: string }>`
 
 	:active {
 		transform: translateY(10px);
-	}
-
-	a {
-		text-decoration: none;
-		color: inherit;
-		${underlineFocus}
 	}
 `;

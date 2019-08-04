@@ -60,11 +60,15 @@ export default class TopBarNotLogged extends Component<
 const StyledTopBar = styled.header`
 	background: ${firstColor};
 	position: fixed;
-	width: 100vw;
+	width: 100%;
 	height: 15vh;
 	font-size: 1rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	z-index: 1;
+
+	@media only screen and (max-height: 500px) {
+		height: 23vh;
+	}
 `;

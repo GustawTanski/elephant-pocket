@@ -15,8 +15,8 @@ export default (props: any): React.ReactElement => {
 
 export const LogoText = styled.div`
 	font-family: ${decorativeFont};
-	font-size: 1.33em;
-	padding: 1em;
+	font-size: 9vmin;
+	padding-left: 0.5em;
 	flex: 1;
 
 	a {
@@ -24,18 +24,10 @@ export const LogoText = styled.div`
 		text-decoration: none;
 		outline: 0;
 		position: relative;
-		${underlineFocus}
+		/* ${underlineFocus} */
 	}
 
-	@media only screen and (min-width: 420px) {
-		font-size: 1.6em;
-	}
-
-	@media only screen and (min-width: 700px) {
-		font-size: 2em;
-	}
-
-	@media only screen and (min-width: 1200px) {
-		font-size: 2.5em;
+	@media only screen and (min-width: 550px) {
+		font-size: 48px;
 	}
 `;

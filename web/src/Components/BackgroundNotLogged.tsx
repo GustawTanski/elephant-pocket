@@ -2,28 +2,38 @@ import React, { Component, ReactNode } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
+import { storeType } from "../Redux/store";
 import { firstColor } from "../cssVariables";
 
 export interface IBackgroundNotLoggedProps {
-    children: ReactNode,
-    forceLogin: boolean;
-    xToken?: string;
+	children: ReactNode;
+	forceLogin: boolean;
+	xToken?: string;
+	context: { history: { push: (path: string) => void } };
 }
 
-class BackgroundNotLogged extends Component<IBackgroundNotLoggedProps>
-{
-    render(): ReactNode {
-
-        return (<StyledBackground>
-            {this.props.children}
-        </StyledBackground>);
-    }
+class BackgroundNotLogged extends Component<IBackgroundNotLoggedProps> {
+	componentDidMount() {
+		const { xToken, forceLogin, context } = this.props;
+		if (forceLogin && xToken) context.history.push("/me");
+	}
+	render(): ReactNode {
+		return <StyledBackground>{this.props.children}</StyledBackground>;
+	}
 }
 
 const StyledBackground = styled.main`
-    background: ${firstColor};
-    width: 100%;
-    min-height: 100vh;
-`
+	background: ${firstColor};
+	width: 100%;
+	min-height: 100vh;
+	/* overflow: scroll; */
+`;
 
-export default BackgroundNotLogged;
+function mapStateToProps(state: storeType) {
+	return { xToken: state.xToken };
+}
+
+export default connect(
+	mapStateToProps,
+	{}
+)(BackgroundNotLogged);
