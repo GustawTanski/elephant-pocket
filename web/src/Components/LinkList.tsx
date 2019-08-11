@@ -1,3 +1,5 @@
+//! KOMPONENT DO PRZEPISANIA NA NOWO
+
 import React, { Component, ReactElement } from "react";
 import styled from "styled-components";
 

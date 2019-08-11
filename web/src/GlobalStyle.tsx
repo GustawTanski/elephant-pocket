@@ -1,21 +1,21 @@
 import { createGlobalStyle } from "styled-components";
-import { mainFont, secondColor }  from "./cssVariables";
+
+import * as CSS from "./cssVariables";
 
 export default createGlobalStyle`
 	:root {
-		
-	}
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
+		--mainFont : Open Sans;
+		--decorativeFont : Lobster Two;
+
+		--firstColor : #33658a;
+		--secondColor : #FDFAD4;
+		--thirdColor : #DB4D15;
+		--fourthColor : #1B2324;
 	}
 
 	html {
-		font-family: ${mainFont}, Helvetica, sans-serif;
+		font-family: ${CSS.mainFont}, Helvetica, sans-serif;
 		font-size: 18px;
-		color: ${secondColor};
+		color: ${CSS.secondColor};
 	}
 `;

@@ -1,7 +1,6 @@
 import React, { Component, ReactNode } from "react";
-import styled from "styled-components";
 import { connect } from "react-redux";
-
+import styled from "styled-components";
 import { storeType } from "../Redux/store";
 import { firstColor } from "../cssVariables";
 

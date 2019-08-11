@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 import { ILinkInfo } from "../interfaces";
-import underlineFocus from "../Atoms/underlineFocus";
 
 export interface ILinkElementProps {
 	link: ILinkInfo;

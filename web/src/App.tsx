@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
-import LandingView from "./Views/LandingView";
+import LandingView from "./Views/LandigView";
 import GlobalStyle from "./GlobalStyle";
 
 export default () => {
