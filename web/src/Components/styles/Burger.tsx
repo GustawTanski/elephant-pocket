@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { square, rightRounded } from "./mixins";
+import MenuIcon from "./MenuIcon";
 import * as breakpoint from "../../breakpoints";
 
 import * as CSS from "../../cssVariables";
@@ -13,15 +14,8 @@ export default styled.button<{ opened: boolean }>`
 	align-items: center;
 	background: transparent;
 	${square(39)};
+	padding: 0;
 	outline: 0;
-
-	.icon {
-		transition: transform 0.5s;
-	}
-
-	:active .icon {
-		transform: translateY(10px);
-	}
 
 	::before {
 		content: "";
@@ -35,9 +29,20 @@ export default styled.button<{ opened: boolean }>`
 		${rightRounded(19)}
 		will-change: transform;
 		transition: transform 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0s;
-
-		${props => props.opened && css`transform: scale(45)`}
+		pointer-events: none;
 	}
+
+	:active ${MenuIcon} {
+		transform: translateY(10px);
+	}
+
+	${({ opened }) =>
+		opened &&
+		css`
+			::before {
+				transform: scale(45);
+			}
+		`}
 
 	@media only screen and (min-width: ${breakpoint.tablet}) {
 		display: none;

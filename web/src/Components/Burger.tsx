@@ -1,18 +1,18 @@
-import React, { Component, ReactNode, Fragment } from "react";
-import { Icon } from "react-icons-kit";
+import React, { Component, ReactElement, Fragment, cloneElement } from "react";
+import { Transition } from "react-transition-group";
 import { menu } from "react-icons-kit/feather/menu";
 import { x } from "react-icons-kit/feather/x";
 
 import * as S from "./styles";
 
 interface Props {
-	children?: ReactNode;
+	children?: ReactElement;
 }
 
 interface State {
 	opened: boolean;
 }
-export default class NavButton extends Component<Props, State> {
+export default class Burger extends Component<Props, State> {
 	state: State = { opened: false };
 
 	onClick = () => {
@@ -24,10 +24,27 @@ export default class NavButton extends Component<Props, State> {
 		const { children } = this.props;
 		return (
 			<Fragment>
-				<S.NavButton onClick={this.onClick} opened={opened}>
-					<Icon icon={!opened ? menu : x} size={20} className="icon" />
-				</S.NavButton>
-				{children}
+				<S.Burger opened={opened}>
+					<S.MenuIcon
+						// as="button"
+						onClick={this.onClick}
+						icon={!opened ? menu : x}
+						size={20}
+						className="icon"
+					/>
+				</S.Burger>
+				<Transition
+					in={opened}
+					timeout={{ enter: 200, exit: 500 }}
+					mountOnEnter
+					unmountOnExit
+				>
+					{state =>
+						cloneElement(children as React.ReactElement<any>, {
+							transitionState: state
+						})
+					}
+				</Transition>
 			</Fragment>
 		);
 	}

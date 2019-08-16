@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 import { ILinkInfo } from "../interfaces";
-import NavButton from "./Burger";
+import Burger from "./Burger";
 import Logo from "./Logo";
 import LinkList from "./LinkList";
 import LinkInfo from "../Classes/LinkInfo";
@@ -47,7 +47,7 @@ export default class TopBarNotLogged extends Component<
 		return (
 			<S.TopBar>
 				<Logo />
-				<NavButton />
+				<Burger />
 				<LinkList
 					links={links}
 					showed={isWide || isNavOpened}
