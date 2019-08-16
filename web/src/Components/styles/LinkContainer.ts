@@ -1,7 +1,8 @@
-import styled from "styled-components";
-import { innerAnchorReset } from "./mixins"
+import styled, { css } from "styled-components";
+import { innerAnchorReset, rightRounded } from "./mixins";
+import * as CSS from "../../cssVariables";
 
-export default styled.div<{ primary?: boolean }>`
+export default styled.div<{ primary?: boolean; secondary?: boolean }>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -12,9 +13,28 @@ export default styled.div<{ primary?: boolean }>`
 	transition: transform 0.5s;
 	${innerAnchorReset()};
 
+	${({ primary, secondary }) =>
+		(primary ||
+		secondary) &&
+		css`
+			${rightRounded(30)}
+		`}
+	${({ primary }) =>
+		primary &&
+		css`
+			background: ${CSS.thirdColor};
+		`}
+
+	${({ secondary }) =>
+		secondary &&
+		css`
+			background: ${CSS.fourthColor};
+		`}
+
+	/* on wider screens 
 	:hover {
 		transform: scale(1.2);
-	}
+	} */
 
 	:active {
 		transform: translateY(10px);

@@ -50,44 +50,7 @@ export default styled.ul<{transitionState?: transitionHelper.transitionStateType
 `;
 
 // const NavList = styled.ul`
-// 	top: 0;
-// 	left: 0;
-// 	list-style: none;
-// 	display: flex;
-// 	flex-direction: column;
-// 	position: absolute;
-// 	z-index: -1;
-// 	height: 100vh;
-// 	width: 100vw;
-// 	padding: 30vh 0;
-// 	justify-content: space-around;
-// 	align-items: center;
 
-// 	&.animated-enter ${StyledLinkElement} {
-// 		opacity: 0;
-// 	}
-
-// 	&.animated-enter-active ${StyledLinkElement} {
-// 		opacity: 1;
-// 		transition: opacity 1s;
-// 		span {
-// 			animation: ${rotateIn} 1.3s 0.1s cubic-bezier(0.2, 1, 0.2, 1) both;
-// 			transform-origin: top left;
-// 		}
-// 	}
-
-// 	&.animated-exit ${StyledLinkElement} {
-// 		opacity: 1;
-// 	}
-
-// 	&.animated-exit-active ${StyledLinkElement} {
-// 		opacity: 0;
-// 		/* transition: opacity 1s; */
-// 		span {
-// 			animation: ${rotateOut} 1s cubic-bezier(0.2, 1, 0.2, 1) both;
-// 			transform-origin: 0;
-// 		}
-// 	}
 
 // 	@media only screen and (max-height: 450px) {
 // 		padding: 20vh 0;

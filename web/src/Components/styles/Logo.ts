@@ -1,4 +1,6 @@
 import styled from "styled-components";
+
+// import { innerAnchorReset } from "./mixins"
 import { decorativeFont } from "../../cssVariables";
 
 export default styled.div`
