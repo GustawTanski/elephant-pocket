@@ -35,7 +35,7 @@ export default class Burger extends Component<Props, State> {
 				</S.Burger>
 				<Transition
 					in={opened}
-					timeout={{ enter: 200, exit: 500 }}
+					timeout={{ enter: 100, exit: 1000 }}
 					mountOnEnter
 					unmountOnExit
 				>

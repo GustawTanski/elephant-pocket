@@ -1,12 +1,26 @@
 import styled, { css } from "styled-components";
 import { positionAbsoluteCenter, transitionHelper } from "./mixins";
 
-var mountedStyle = css`
+import LinkContainer from "./LinkContainer";
+import { rotateIn, rotateOut } from "./keyframes";
+
+const mountedStyle = css`
 	opacity: 1;
 `;
-var unmountedStyle = css`
+const unmountedStyle = css`
 	opacity: 0;
 `;
+
+const linkMountedStyle = css`
+	transform-origin: top left;
+	animation: ${rotateIn} 1s cubic-bezier(0.2, 1, 0.2, 1) both;
+`;
+
+const linkUnmountStyle = css`
+	transform-origin: 0;
+	animation: ${rotateOut} 0.9s cubic-bezier(0.2, 1, 0.2, 1) both;
+`;
+
 //prettier-ignore
 export default styled.ul<{transitionState?: transitionHelper.transitionStateType;}>`
 	list-style: none;
@@ -26,6 +40,13 @@ export default styled.ul<{transitionState?: transitionHelper.transitionStateType
 		exiting: unmountedStyle,
 		exited: unmountedStyle,
 	})}
+
+	${LinkContainer} a {
+		${transitionHelper.transitionMixin({
+			exiting: linkUnmountStyle,
+			entered: linkMountedStyle
+		})}
+	}
 `;
 
 // const NavList = styled.ul`
