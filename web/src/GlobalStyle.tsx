@@ -13,6 +13,14 @@ export default createGlobalStyle`
 		--fourthColor : #1B2324;
 	}
 
+	body{
+		overflow: hidden;
+	}
+
+	*, *::before, *::after {
+		box-sizing: border-box;
+	}
+
 	html {
 		font-family: ${CSS.mainFont}, Helvetica, sans-serif;
 		font-size: 18px;

@@ -34,6 +34,7 @@ export default styled.ul<{transitionState?: transitionHelper.transitionStateType
 	opacity: 1;
 	transition: opacity 0.5s;
 	${positionAbsoluteCenter()};
+	position: fixed;
 	${transitionHelper.transitionMixin({
 		entering: unmountedStyle,
 		entered: mountedStyle,
