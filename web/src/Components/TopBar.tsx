@@ -1,16 +1,15 @@
 import React, { Component, ReactChild } from "react";
 import * as S from "./styles";
+import Navigation from "./Navigation";
+import Logo from "./Logo";
 
-interface Props {
-    children?: ReactChild
-}
 
 export default class TopBar extends Component {
     render() {
-        const { children } = this.props;
         return (
             <S.TopBar>
-                {children}
+                <Logo />
+				<Navigation />
             </S.TopBar>
         )
     }

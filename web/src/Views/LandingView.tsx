@@ -1,15 +1,20 @@
 import React, { Component, Fragment } from "react";
-import Navigation from "../Components/Navigation";
-import TopBar from "../Components/TopBar";
-import Logo from "../Components/Logo"
 
-export default class LandingView extends Component {
+import TopBar from "../Components/TopBar";
+import Background from "../Components/Background";
+
+interface Props {
+	history: { push: (path: string) => void };
+}
+
+export default class LandingView extends Component<Props> {
 	render() {
+		const { history } = this.props;
 		return (
-			<TopBar>
-				<Logo />
-				<Navigation />
-			</TopBar>
+			<Fragment>
+				<TopBar />
+				<Background history={history} forceLogin />
+			</Fragment>
 		);
 	}
 }
