@@ -9,7 +9,7 @@ export default styled.header`
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	padding: 1em 5vw;
+	padding: 1rem 5vw;
 	align-items: center;
 	z-index: 1;
 

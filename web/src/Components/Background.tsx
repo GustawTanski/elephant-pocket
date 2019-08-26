@@ -1,11 +1,11 @@
-import React, { Component, ReactChildren } from "react";
+import React, { Component, ReactChild } from "react";
 import { connect } from "react-redux";
 
 import * as S from "./styles";
 import { storeType } from "../Redux/store"
 
 interface Props {
-    children?: ReactChildren;
+    children?: ReactChild;
     xToken: string;
     forceLogin: boolean;
 	history: { push: (path: string) => void }

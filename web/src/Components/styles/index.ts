@@ -5,6 +5,13 @@ import NavigationLinks from "./NavigationLinks";
 import MenuIcon from "./MenuIcon";
 import LinkContainer from "./LinkContainer";
 import Background from "./Background";
+import Content from "./LandingView/Content";
+import BigText from "./LandingView/BigText";
+import SmallText from "./LandingView/SmallText";
+import BigInput from "./BigInput";
+import Link from "./LandingView/Link"
+
+const LandingView = { BigText, Content, SmallText, LinkContainer: Link  }
 
 export {
 	TopBar,
@@ -13,5 +20,7 @@ export {
 	NavigationLinks,
 	MenuIcon,
 	LinkContainer,
-	Background
+	Background,
+	LandingView,
+	BigInput
 };
