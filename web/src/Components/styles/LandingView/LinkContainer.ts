@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import LinkContainer from "../LinkContainer";
 import LinkContent from "../LinkContent";
+import { laptop } from "../../../breakpoints";
 
 export default styled(LinkContainer)`
     grid-row-start: 5;
@@ -14,5 +15,9 @@ export default styled(LinkContainer)`
         :active {
             transform: unset;
         }
+    }
+    @media only screen and (min-width: ${laptop}){
+        grid-column: 3;
+        grid-row: 2;
     }
 `
