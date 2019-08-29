@@ -40,7 +40,7 @@ export default class Burger extends Component<Props, State> {
 					unmountOnExit
 				>
 					{state =>
-						cloneElement(children as React.ReactElement<any>, {
+						cloneElement(children as ReactElement<any>, {
 							transitionState: state
 						})
 					}

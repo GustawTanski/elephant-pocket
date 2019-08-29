@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileMedium, mobileLarge } from "../../../breakpoints"
+import { mobileMedium, mobileLarge, laptop } from "../../../breakpoints"
 
 export default styled.h1`
     margin: 0;
@@ -12,5 +12,11 @@ export default styled.h1`
 
     @media only screen and (min-width: ${mobileLarge}) {
         font-size: 18vw;
+    }
+
+    @media only screen and (min-width: ${laptop}){
+        grid-row: 1 / 3;
+        font-size: 20vh;
+        align-self: end;
     }
 `

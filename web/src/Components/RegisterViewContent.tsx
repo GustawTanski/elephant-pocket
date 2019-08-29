@@ -6,7 +6,7 @@ interface State {
 	emailValue: string;
 }
 
-export default class RegisterViewContent extends Component {
+export default class RegisterViewContent extends Component<{}, State> {
 	state = { emailValue: "" };
 
 	onEmailInputChange = ({ target }: { target: HTMLInputElement }) => {

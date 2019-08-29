@@ -1,4 +1,4 @@
-import React, { Component, ReactChild } from "react";
+import React, { Component } from "react";
 import * as S from "./styles";
 import Navigation from "./Navigation";
 import Logo from "./Logo";

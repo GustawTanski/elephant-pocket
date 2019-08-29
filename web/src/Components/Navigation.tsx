@@ -50,10 +50,10 @@ export default class Navigation extends Component<Props, State> {
 		if (!isWiderThanPhone)
 			return (
 				<Burger>
-					<NavigationLinks />
+					<NavigationLinks isWide={false} />
 				</Burger>
 			);
-		else return null;
+		else return <NavigationLinks isWide={true}  />;
 	}
 
 	render(): ReactNode {
