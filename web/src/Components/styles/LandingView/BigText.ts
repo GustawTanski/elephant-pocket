@@ -16,7 +16,7 @@ export default styled.h1`
 
     @media only screen and (min-width: ${laptop}){
         grid-row: 1 / 3;
-        font-size: 20vh;
-        align-self: end;
+        font-size: 12vw;
+        align-self: start;
     }
 `
