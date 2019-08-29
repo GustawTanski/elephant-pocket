@@ -1,8 +1,9 @@
 import styled, { css } from "styled-components";
 import { positionAbsoluteCenter, transitionHelper } from "./mixins";
 
-import LinkContainer from "./LinkContainer";
+import LinkContainer from "./LinkContent";
 import { rotateIn, rotateOut } from "./keyframes";
+import { tablet } from "../../breakpoints";
 
 const mountedStyle = css`
 	opacity: 1;
@@ -42,36 +43,22 @@ export default styled.ul<{transitionState?: transitionHelper.transitionStateType
 		exited: unmountedStyle,
 	})}
 
-	${LinkContainer} a {
+	${LinkContainer} .anim {
 		${transitionHelper.transitionMixin({
 			exiting: linkUnmountStyle,
 			entered: linkMountedStyle
 		})}
 	}
+
+	@media only screen and (min-width: ${tablet}) {
+		${positionAbsoluteCenter("unset")}
+		z-index: 1;
+		flex-direction: row;
+		height: unset;
+		justify-content: space-between;
+		font-size: 1rem;
+		width: 50vw;
+		max-width: 512px;
+		min-width: fit-content;
+	}
 `;
-
-// const NavList = styled.ul`
-
-
-// 	@media only screen and (max-height: 450px) {
-// 		padding: 20vh 0;
-// 	}
-
-// 	@media only screen and (min-width: 800px) {
-// 		padding: unset;
-// 		height: unset;
-// 		position: static;
-// 		flex-direction: row;
-// 		flex: 1.1;
-// 		margin: 0 10px;
-// 		&.animated-enter-active
-// 			${StyledLinkElement},
-// 			&.animated-exit-active
-// 			${StyledLinkElement} {
-// 			transition: none;
-// 			span {
-// 				animation: none;
-// 			}
-// 		}
-// 	}
-// `;

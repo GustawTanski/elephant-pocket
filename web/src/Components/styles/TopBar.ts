@@ -1,7 +1,7 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import { firstColor } from "../../cssVariables";
-import { mobileLarge } from "../../breakpoints";
+import { mobileLarge, tablet } from "../../breakpoints";
 
 export default styled.header`
 	background: ${firstColor};
@@ -16,7 +16,8 @@ export default styled.header`
 	@media only screen and (min-width: ${mobileLarge}) {
 		padding: 1em 21.25px;
 	} 
-	/* @media only screen and (max-height: 500px) {
-		height: 23vh;
-	} */
+
+	@media only screen and (min-width: ${tablet}) {
+		align-items: baseline;
+	}
 `;

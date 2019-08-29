@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import LinkContainer from "../LinkContainer";
+import LinkContent from "../LinkContent";
 
 export default styled(LinkContainer)`
     grid-row-start: 5;
@@ -8,8 +9,10 @@ export default styled(LinkContainer)`
     justify-self: center;
     margin: 5vh 0;
     position: relative;
-    transition: unset;
-    :active {
-        transform: unset;
+    ${LinkContent} {
+        transition: unset;
+        :active {
+            transform: unset;
+        }
     }
 `

@@ -2,7 +2,6 @@ import React, { Component, createRef, ReactNode } from "react";
 import { TweenMax } from "gsap";
 
 import * as S from "./styles";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 interface State {
@@ -12,7 +11,6 @@ interface State {
 export default class LandingViewContent extends Component<{}, State> {
 	state = { bigTextLastWord: "expenses." };
 
-	bigTextRef = createRef<HTMLHeadingElement>();
 	smallTextRef = createRef<HTMLParagraphElement>();
 	bigTextLastLineRef = createRef<HTMLSpanElement>();
 	linkContainerRef = createRef<HTMLDivElement>();
@@ -21,12 +19,13 @@ export default class LandingViewContent extends Component<{}, State> {
 		const smallText = this.smallTextRef.current as HTMLParagraphElement,
 			lastLine = this.bigTextLastLineRef.current as HTMLSpanElement,
 			linkContainer = this.linkContainerRef.current as HTMLDivElement;
-
 		const delay = this.writingAnimation(lastLine, 0.08);
 		this.setChangingBigText();
 		const delay2 = this.writingAnimation(smallText, 0.03, delay);
-		TweenMax.from(linkContainer, .8, { scale: 0, opacity: 0, delay: delay2 });
+
+		TweenMax.from(linkContainer, 0.8, { scale: 0, opacity: 0, delay: delay2 });
 	}
+
 	componentDidUpdate() {
 		const lastLine = this.bigTextLastLineRef.current as HTMLSpanElement;
 		this.writingAnimation(lastLine, 0.08);
@@ -59,33 +58,48 @@ export default class LandingViewContent extends Component<{}, State> {
 		return element.children.length * timePerLetter + delay;
 	}
 
-	render() {
+	BigText = () => {
+		const { wrapCharsInSpans, bigTextLastLineRef } = this;
 		const { bigTextLastWord } = this.state;
-		const {
-			bigTextLastLineRef,
-			smallTextRef,
-			linkContainerRef,
-			wrapCharsInSpans,
-			bigTextRef
-		} = this;
+		return (
+			<S.LandingView.BigText>
+				Control <br />
+				your <br />
+				<span ref={bigTextLastLineRef}>
+					{wrapCharsInSpans(bigTextLastWord)}
+				</span>{" "}
+				<br />
+			</S.LandingView.BigText>
+		);
+	}
+
+	SmallText = () => {
+		const { smallTextRef, wrapCharsInSpans } = this;
+		return (
+			<S.LandingView.SmallText ref={smallTextRef}>
+				{wrapCharsInSpans(
+					"Make your budget maintainable as never it have been."
+				)}
+			</S.LandingView.SmallText>
+		);
+	}
+
+	TryItLink = () => {
+		const { linkContainerRef } = this;
+		return (
+			<S.LandingView.LinkContainer ref={linkContainerRef}>
+				<Link to="/register">
+					<S.LinkContent primary>Try it!</S.LinkContent>
+				</Link>
+			</S.LandingView.LinkContainer>
+		);
+	}
+	render() {
 		return (
 			<S.LandingView.Content>
-				<S.LandingView.BigText ref={bigTextRef}>
-					Control <br />
-					your <br />
-					<span ref={bigTextLastLineRef}>
-						{wrapCharsInSpans(bigTextLastWord)}
-					</span>{" "}
-					<br />
-				</S.LandingView.BigText>
-				<S.LandingView.SmallText ref={smallTextRef}>
-					{wrapCharsInSpans(
-						"Make your budget maintainable as never it have been."
-					)}
-				</S.LandingView.SmallText>
-				<S.LandingView.LinkContainer secondary ref={linkContainerRef}>
-					<Link to="/register">Try it!</Link>
-				</S.LandingView.LinkContainer>
+				<this.BigText />
+				<this.SmallText />
+				<this.TryItLink />
 			</S.LandingView.Content>
 		);
 	}

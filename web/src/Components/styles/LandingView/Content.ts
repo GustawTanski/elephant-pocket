@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { innerAnchorReset } from "../mixins";
+import { tablet } from "../../../breakpoints";
 
 export default styled.div`
 	width: 100%;
@@ -9,4 +11,9 @@ export default styled.div`
 	grid-template-columns: 100%;
 	grid-template-rows: auto minmax(20px, 10vh) auto auto auto 1fr;
 	grid-column: 1;
+
+	${innerAnchorReset()};
+	@media only screen and (orientation: landscape) {
+		padding: 12vh;
+	}
 `;

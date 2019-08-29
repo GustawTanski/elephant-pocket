@@ -3,15 +3,16 @@ import Burger from "./Burger";
 import Logo from "./Logo";
 import NavigationLinks from "./NavigationLinks";
 import MenuIcon from "./MenuIcon";
-import LinkContainer from "./LinkContainer";
+import LinkContent from "./LinkContent";
 import Background from "./Background";
 import Content from "./LandingView/Content";
 import BigText from "./LandingView/BigText";
 import SmallText from "./LandingView/SmallText";
 import BigInput from "./BigInput";
-import Link from "./LandingView/Link"
+import LinkContainerLandingView from "./LandingView/LinkContainer"
+import LinkContainer from "./LinkContainer";
 
-const LandingView = { BigText, Content, SmallText, LinkContainer: Link  }
+const LandingView = { BigText, Content, SmallText, LinkContainer: LinkContainerLandingView  }
 
 export {
 	TopBar,
@@ -19,8 +20,9 @@ export {
 	Logo,
 	NavigationLinks,
 	MenuIcon,
-	LinkContainer,
+	LinkContent,
 	Background,
 	LandingView,
-	BigInput
+	BigInput,
+	LinkContainer
 };
