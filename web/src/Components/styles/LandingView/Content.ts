@@ -4,7 +4,7 @@ import { tablet, laptop } from "../../../breakpoints";
 
 export default styled.div`
 	width: 100%;
-	height: 100vh;
+	min-height: 100vh;
 	padding: 0 5vw;
 	padding-top: 15vh;
 	display: grid;
@@ -14,11 +14,12 @@ export default styled.div`
 
 	${innerAnchorReset()};
 	@media only screen and (orientation: landscape) and (max-width: ${tablet}) {
-		padding: 12vh;
+		padding-top: 12vh;
 	}
 	@media only screen and (min-width: ${laptop}) {
+		padding-top: 10vh;
 		grid-template-columns: 70% 5% 25%;
-		grid-template-rows: 70% 15vh 10vh;
+		grid-template-rows: auto 15vh 10vh;
 		
 	}
 `;

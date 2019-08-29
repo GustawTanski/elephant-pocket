@@ -3,7 +3,7 @@ import { positionAbsoluteCenter, transitionHelper } from "./mixins";
 
 import LinkContainer from "./LinkContent";
 import { rotateIn, rotateOut } from "./keyframes";
-import { tablet } from "../../breakpoints";
+import { tablet, fullHD } from "../../breakpoints";
 
 const mountedStyle = css`
 	opacity: 1;
@@ -60,5 +60,8 @@ export default styled.ul<{transitionState?: transitionHelper.transitionStateType
 		width: 50vw;
 		max-width: 512px;
 		min-width: fit-content;
+	}
+	@media only screen and (min-width: ${fullHD}) {
+		max-width: 800px;
 	}
 `;

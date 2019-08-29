@@ -14,7 +14,8 @@ export default createGlobalStyle`
 	}
 
 	body{
-		overflow: hidden;
+		overflow-x: hidden;
+		overflow-y: scroll;
 	}
 
 	*, *::before, *::after {

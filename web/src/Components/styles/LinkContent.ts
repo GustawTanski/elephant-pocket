@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { rightRounded } from "./mixins";
 import * as CSS from "../../cssVariables";
-import { tablet } from "../../breakpoints";
+import { fullHD, tablet } from "../../breakpoints";
 
 export default styled.div<{ primary?: boolean; secondary?: boolean }>`
 	display: flex;
@@ -15,8 +15,7 @@ export default styled.div<{ primary?: boolean; secondary?: boolean }>`
 	cursor: pointer;
 
 	${({ primary, secondary }) =>
-		(primary ||
-		secondary) &&
+		(primary || secondary) &&
 		css`
 			${rightRounded(30)}
 		`}
@@ -30,13 +29,27 @@ export default styled.div<{ primary?: boolean; secondary?: boolean }>`
 		secondary &&
 		css`
 			background: ${CSS.fourthColor};
-		`}
+		`
+	}
 
 	:active {
 		transform: translateY(10px);
 	}
+	@media only screen and (min-width: ${tablet}){
+		:active{
+			transform: unset;
+		}
+	}
 
-	@media only screen and (min-width: ${tablet}) {
-		/* font-size: 1rem; */
+	@media only screen and (min-width: ${fullHD}) {
+		font-size: 2rem;
+		height: 56px;
+		width: 186px;
+		${({ primary, secondary }) =>
+			(primary || secondary) &&
+			css`
+				${rightRounded(40)}
+			`
+		}
 	}
 `;
