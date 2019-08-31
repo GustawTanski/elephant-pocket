@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import * as S from "./styles";
-import { interfaceDeclaration } from "@babel/types";
+import BigInput from "./BigInput";
+
 
 interface State {
 	emailValue: string;
@@ -16,10 +17,13 @@ export default class RegisterViewContent extends Component<{}, State> {
 		const { emailValue } = this.state;
 		const { onEmailInputChange } = this;
 		return (
-			<S.BigInput
+			<BigInput
 				type="email"
+				name="email"
+				placeholder="YOUR EMAIL"
 				value={emailValue}
 				onChange={onEmailInputChange}
+				spellCheck={false}
 			/>
 		);
 	}
