@@ -1,11 +1,10 @@
 import styled, { css } from "styled-components";
 import { positionAbsoluteCenter } from "./mixins";
 
-export default styled.input<{disabled?: boolean}>`
-    transform: translateY(20vh);
-    ${positionAbsoluteCenter()}
-    position: fixed;
-
+export default styled.input<{disabled: boolean, scalingFactor: number}>`
+    left: 0;
+    top: 0;
+    position: absolute;
     background: transparent;
     outline: 0;
     border: 0;
@@ -17,12 +16,12 @@ export default styled.input<{disabled?: boolean}>`
         color: inherit;
         opacity: 0.3;
     }
-    ${({ disabled }) => {
+    /* ${({ disabled, scalingFactor }) => {
         if (disabled) {
             return css`
-                font-size: 1rem;
+                transform: scale(${scalingFactor});
             `
         }
-    }}
+    }} */
 
 `

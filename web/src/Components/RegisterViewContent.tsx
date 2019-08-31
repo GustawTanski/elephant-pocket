@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import * as S from "./styles";
 import BigInput from "./BigInput";
 
-
 interface State {
 	emailValue: string;
 }
@@ -17,14 +16,18 @@ export default class RegisterViewContent extends Component<{}, State> {
 		const { emailValue } = this.state;
 		const { onEmailInputChange } = this;
 		return (
-			<BigInput
-				type="email"
-				name="email"
-				placeholder="YOUR EMAIL"
-				value={emailValue}
-				onChange={onEmailInputChange}
-				spellCheck={false}
-			/>
+			<div style={{ position: "absolute", top: "70vh"}}>
+				<BigInput
+					type="email"
+					name="e-mail"
+					placeholder="YOUR EMAIL"
+					value={emailValue}
+					onChange={onEmailInputChange}
+					activePositionY={300}
+					spellCheck={false}
+					active={false}
+				/>
+			</div>
 		);
 	}
 }
