@@ -1,4 +1,4 @@
-import React, { Component, createRef, KeyboardEvent, MouseEvent } from "react";
+import React, { Component, createRef, KeyboardEvent, PointerEvent, ChangeEvent } from "react";
 
 import * as S from "./styles";
 import { TweenMax, Power1 } from "gsap";
@@ -8,27 +8,35 @@ interface Props {
 	placeholder?: string;
 	name?: string;
 	value?: string;
-	onChange?: (event: any) => void;
-	onClick?: () => void;
+	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+	onPointerUp?: (event: PointerEvent<HTMLLabelElement>) => void;
+	onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 	spellCheck?: boolean;
+	active: boolean;
 }
 
 interface State {
 	scalingFactor: number;
-	active: boolean;
-	centerPositionY: number;
+	heightInCenterStateFactor: number;
+	windowSize: { height: number; width: number };
 }
 
 export default class BigInput extends Component<Props, State> {
-	state = { scalingFactor: 2, active: true, centerPositionY: window.innerHeight / 2 };
+	state = {
+		scalingFactor: 2,
+		heightInCenterStateFactor: 0.5,
+		windowSize: { height: window.innerHeight, width: window.innerWidth }
+	};
 
 	inputRef = createRef<HTMLInputElement>();
 	labelRef = createRef<HTMLLabelElement>();
-	spanRef = createRef<HTMLSpanElement>();
+	divRef = createRef<HTMLDivElement>();
+
+	readonly POSITION_OUT_OF_THE_SCREEN = -200;
 
 	componentDidMount() {
 		const input = this.inputRef.current,
-			span = this.spanRef.current;
+			span = this.divRef.current;
 		if (input) {
 			TweenMax.set(input, { ...this.getTranslateData("above") });
 			TweenMax.to(input, 0.5, {
@@ -38,37 +46,60 @@ export default class BigInput extends Component<Props, State> {
 			});
 		}
 		if (span) {
-			TweenMax.set(span, { x: -200 });
+			TweenMax.set(span, { x: this.POSITION_OUT_OF_THE_SCREEN });
 		}
+		window.addEventListener("resize", this.onResize);
 	}
 
 	componentDidUpdate(prevProps: Props, prevState: State) {
-		const { active } = this.state,
+		const { active } = this.props,
 			input = this.inputRef.current,
-			span = this.spanRef.current;
-		if (active !== prevState.active && input && span) this.handleShift();
+			span = this.divRef.current;
+		const { windowSize } = this.state;
+		if (active !== prevProps.active && input && span) this.handleShift();
+		if (
+			windowSize.width !== prevState.windowSize.width ||
+			windowSize.height !== prevState.windowSize.height
+		)
+			this.handleResize();
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener("resize", this.onResize);
 	}
 
 	handleShift() {
 		const input = this.inputRef.current as HTMLInputElement,
-			span = this.spanRef.current as HTMLSpanElement,
-			{ active } = this.state;
+			div = this.divRef.current as HTMLSpanElement,
+			{ active } = this.props,
+			ANIMATION_TIME = .5;
 		let { scalingFactor } = this.state;
 		if (!active) scalingFactor = 1 / scalingFactor;
-		TweenMax.to(input, 0.5, {
+		TweenMax.to(input, ANIMATION_TIME, {
 			scale: active ? 1 : scalingFactor,
-			...this.getTranslateData(active ? "top" : "down", scalingFactor)
+			...this.getTranslateData(active ? "top" : "down", scalingFactor),
+			overflow: active ? "hidden" : "visible",
+			ease: Power1.easeOut,
+			textAlign: "center"
 		});
-		TweenMax.to(span, 0.5, { x: active ? -span.getBoundingClientRect().right : 0 });
+		if (!active) TweenMax.set(input, { delay: .5, textAlign: active ? "center" : "left"});
+		TweenMax.to(div, ANIMATION_TIME, {
+			x: active ? this.POSITION_OUT_OF_THE_SCREEN : 0
+		});
+		input.focus();
 	}
 
-	onEnterClicked = (event: KeyboardEvent<HTMLInputElement>) => {
-		const target = event.target as HTMLInputElement;
-		if (event.keyCode === 13 && target.value) this.setState({ active: false });
-	};
+	handleResize() {
+		const input = this.inputRef.current,
+			div = this.divRef.current,
+			{ active } = this.props;
+		if (input) TweenMax.set(input, { ...this.getTranslateData(active ? "top" : "down") });
+		if (div) TweenMax.set(div, { x: active ? this.POSITION_OUT_OF_THE_SCREEN : 0 });
+	}
 
-	onPointerUp = (event: MouseEvent<HTMLLabelElement>) => {
-		if (!this.state.active) this.setState({ active: true });
+	onResize = () => {
+		const windowSize = { height: window.innerHeight, width: window.innerWidth };
+		this.setState({ windowSize });
 	};
 
 	getTranslateData(to: "top" | "down" | "above", scalingFactor: number = 1) {
@@ -76,24 +107,25 @@ export default class BigInput extends Component<Props, State> {
 			label = input.parentElement as HTMLElement,
 			labelRect = label.getBoundingClientRect(),
 			inputRect = input.getBoundingClientRect(),
-			{ centerPositionY } = this.state;
+			{ heightInCenterStateFactor, windowSize } = this.state,
+			POSITION_IN_LABEL_FACTOR = 0.73;
 		let destination = { x: 0, y: 0 };
 		switch (to) {
 			case "top":
 				destination = {
-					x: window.innerWidth / 2,
-					y: centerPositionY
+					x: windowSize.width / 2,
+					y: windowSize.height * heightInCenterStateFactor
 				};
 				break;
 			case "above":
 				destination = {
-					x: window.innerWidth / 2,
-					y: -300
+					x: windowSize.width / 2,
+					y: this.POSITION_OUT_OF_THE_SCREEN
 				};
 				break;
 			case "down":
 				destination = {
-					x: labelRect.left + 0.6 * labelRect.width,
+					x: labelRect.left + POSITION_IN_LABEL_FACTOR * labelRect.width,
 					y: labelRect.top + labelRect.height / 2
 				};
 				break;
@@ -104,25 +136,18 @@ export default class BigInput extends Component<Props, State> {
 	}
 
 	render() {
-		const { onClick, ...elementProps } = this.props;
-		const { name } = elementProps;
-		const { active } = this.state;
+		const { active, onPointerUp, onKeyDown, ...elementProps } = this.props,
+			{ name } = elementProps;
 		return (
-			<label
-				onPointerUp={this.onPointerUp}
-				ref={this.labelRef}
-				style={{ width: "100%", position: "relative", display: "block" }}
-			>
-				<span ref={this.spanRef} style={{ position: "relative", display: "block" }}>
-					{name && name.toUpperCase()}
-				</span>
+			<S.BigInputContainer onPointerUp={onPointerUp} ref={this.labelRef} htmlFor={name}>
+				<S.BigInputTag ref={this.divRef}>{name && name.toUpperCase()}</S.BigInputTag>
 				<S.BigInput
-					onKeyDown={this.onEnterClicked}
+					onKeyDown={onKeyDown}
 					ref={this.inputRef}
 					{...elementProps}
 					disabled={!active}
 				/>
-			</label>
+			</S.BigInputContainer>
 		);
 	}
 }

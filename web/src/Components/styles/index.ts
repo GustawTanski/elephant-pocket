@@ -9,6 +9,8 @@ import BigInput from "./BigInput";
 import LinkContainer from "./LinkContainer";
 import * as LandingView from "./LandingView";
 import * as RegisterView from "./RegisterView";
+import BigInputContainer from "./BigInputContainer";
+import BigInputTag from "./BigInputTag";
 
 export {
 	TopBar,
@@ -19,6 +21,8 @@ export {
 	LinkContent,
 	Background,
 	BigInput,
+	BigInputContainer,
+	BigInputTag,
 	LinkContainer,
 	LandingView,
 	RegisterView

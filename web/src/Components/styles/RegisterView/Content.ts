@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export default styled.form`
-    display: grid;
-    grid-template-columns: 30% 70%;
-    grid-auto-rows: 40px;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     bottom: 5vh;
     justify-items: center;
     align-items: center;
+    width: 100%;
 `

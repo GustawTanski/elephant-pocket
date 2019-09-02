@@ -13,18 +13,19 @@ export default styled.input<{disabled: boolean}>`
     color: inherit;
     text-align: center;
     transform-origin: top left;
-    padding: 0 5%;
     width: 100%;
+    padding: 0 2.5%;
+    /* margin: 0 auto; */
     ::placeholder{
         color: inherit;
         opacity: 0.3;
     }
-    /* ${({ disabled }) => {
+    ${({ disabled }) => {
         if (disabled) {
             return css`
-                transform: scale();
+                cursor: pointer;
             `
         }
-    }} */
+    }}
 
 `
