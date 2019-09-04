@@ -1,8 +1,7 @@
 import React, { Component, KeyboardEvent, PointerEvent, ChangeEvent, ReactElement } from "react";
 import * as S from "./styles";
-import BigInput from "./BigInput";
-import { checkPropTypes } from "prop-types";
-import { runInThisContext } from "vm";
+// import BigInput from "./BigInput";
+import BigInput from "./BigInput2";
 
 interface State {
 	emailValue: string;
@@ -66,10 +65,13 @@ export default class RegisterViewContent extends Component<{}, State> {
 						placeholder="YOUR PASSWORD"
 						value={passwordValue}
 						onChange={onPasswordInputChange}
-						onPointerUp={onBigInputPointerUp}
+						onLabelPointerUp={onBigInputPointerUp}
 						onKeyDown={onEnterKeyDown}
 						spellCheck={false}
-						active={active == "password"}
+						y={100}
+						x={window.innerWidth/2}
+						// active={active == "password"}
+						position={active == "password" ? "free" : "inLabel"}
 					/>
 				);
 			case "e-mail":
@@ -80,10 +82,13 @@ export default class RegisterViewContent extends Component<{}, State> {
 						placeholder="YOUR EMAIL"
 						value={emailValue}
 						onChange={onEmailInputChange}
-						onPointerUp={onBigInputPointerUp}
+						onLabelPointerUp={onBigInputPointerUp}
 						onKeyDown={onEnterKeyDown}
 						spellCheck={false}
-						active={active == "e-mail"}
+						y={100}
+						x={window.innerWidth / 2}
+						// active={active == "e-mail"}
+						position={active == "e-mail" ? "free" : "inLabel"}
 					/>
 				);
 				break;
@@ -91,8 +96,6 @@ export default class RegisterViewContent extends Component<{}, State> {
 		return children;
 	}
 	render() {
-		return (
-			<S.RegisterView.Content>{this.createRender()}</S.RegisterView.Content>
-		);
+		return <S.RegisterView.Content>{this.createRender()}</S.RegisterView.Content>;
 	}
 }
