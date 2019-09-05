@@ -5,7 +5,7 @@ export default styled.label`
     justify-content: flex-end;
     padding-left: 5vw;
     cursor: pointer;
-    width: 40%;
+    width: 45%;
     margin: .5em 0;
     align-self: flex-start;
 `
