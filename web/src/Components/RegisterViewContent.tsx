@@ -1,26 +1,32 @@
-import React, { Component } from "react";
+import React, { Component, KeyboardEvent, PointerEvent, ChangeEvent, ReactElement } from "react";
 import * as S from "./styles";
-import { interfaceDeclaration } from "@babel/types";
+
+import BigForm, { IInputInfo } from "./BigForm";
+import BigInput from "./BigInput";
 
 interface State {
 	emailValue: string;
+	passwordValue: string;
+	chapter: string;
+	active: string;
 }
 
 export default class RegisterViewContent extends Component<{}, State> {
-	state = { emailValue: "" };
+	state = { emailValue: "", passwordValue: "", active: "e-mail", chapter: "e-mail" };
 
-	onEmailInputChange = ({ target }: { target: HTMLInputElement }) => {
-		this.setState({ emailValue: target.value.toUpperCase() });
-	};
+	inputs: Array<IInputInfo> = [
+		{
+			type: "e-mail",
+			placeholder: "YOUR E-MAIL",
+			name: "e-mail"
+		},
+		{
+			type: "password",
+			placeholder: "YOUR PASSWORD",
+			name: "password"
+		},
+	];
 	render() {
-		const { emailValue } = this.state;
-		const { onEmailInputChange } = this;
-		return (
-			<S.BigInput
-				type="email"
-				value={emailValue}
-				onChange={onEmailInputChange}
-			/>
-		);
+		return <BigForm inputs={this.inputs} />;
 	}
 }
