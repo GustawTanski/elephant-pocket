@@ -68,7 +68,7 @@ export default class RegisterViewContent extends Component<{}, State> {
 						onLabelPointerUp={onBigInputPointerUp}
 						onKeyDown={onEnterKeyDown}
 						spellCheck={false}
-						y={100}
+						y={250}
 						x={window.innerWidth/2}
 						// active={active == "password"}
 						position={active == "password" ? "free" : "inLabel"}
@@ -85,7 +85,7 @@ export default class RegisterViewContent extends Component<{}, State> {
 						onLabelPointerUp={onBigInputPointerUp}
 						onKeyDown={onEnterKeyDown}
 						spellCheck={false}
-						y={100}
+						y={250}
 						x={window.innerWidth / 2}
 						// active={active == "e-mail"}
 						position={active == "e-mail" ? "free" : "inLabel"}

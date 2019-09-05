@@ -5,7 +5,7 @@ export default styled.form`
     flex-direction: column;
     position: absolute;
     bottom: 5vh;
-    justify-items: center;
+    justify-content: center;
     align-items: center;
     width: 100%;
 `

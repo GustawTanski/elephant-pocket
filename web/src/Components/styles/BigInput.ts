@@ -11,7 +11,7 @@ export default styled.input<{disabled: boolean}>`
     font-family: inherit;
     font-size: 36px;
     color: inherit;
-    text-align: center;
+    text-align: left;
     transform-origin: top left;
     width: 100%;
     padding: 0 2.5%;
