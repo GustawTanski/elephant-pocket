@@ -3,7 +3,8 @@ import React, {
 	FormHTMLAttributes,
 	ChangeEvent,
 	PointerEvent,
-	KeyboardEvent
+	KeyboardEvent,
+	FormEvent
 } from "react";
 import { List } from "immutable";
 
@@ -67,9 +68,9 @@ export default class BigForm extends Component<Props, State> {
 	}
 
 	private onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-		const { onScreenArray, activeIndex } = this.state;
+		const { onScreenArray, activeIndex, values } = this.state;
 		const { inputs } = this.props;
-		if (event.keyCode == 13 && event.currentTarget.value) {
+		if (event.keyCode == 13 && values.get<string>(activeIndex, "")) {
 			if (activeIndex + 1 == inputs.length && !onScreenArray.get<boolean>(activeIndex + 1, false)) {
 				this.setState({ activeIndex: -1 });
 			} else {
@@ -129,10 +130,14 @@ export default class BigForm extends Component<Props, State> {
 		);
 	};
 
+	private onSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+	};
+
 	render() {
 		const { inputs, ...elementProps } = this.props;
 		return (
-			<S.RegisterView.Content {...elementProps}>
+			<S.RegisterView.Content onSubmit={this.onSubmit} {...elementProps}>
 				{this.mapPropsToBigInputs()}
 			</S.RegisterView.Content>
 		);
