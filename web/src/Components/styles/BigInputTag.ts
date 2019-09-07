@@ -9,4 +9,5 @@ export default styled.div`
     background: ${thirdColor};
     ${rightRounded(20)};
     padding: 0.2em .9em;
+    user-select: none;
 `

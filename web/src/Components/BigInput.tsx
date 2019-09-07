@@ -49,9 +49,13 @@ export default class BigInput extends Component<Props, State> {
 		const input = this.inputRef.current;
 		const tag = this.tagRef.current;
 		const { timeline } = this;
-		console.log(timeline);
+		const active = timeline.getActive() as gsap.Timeline[];
 		if (input) {
-			timeline.add(TweenMax.set(input, this.getInputTranslationData()));
+			if (!active.length) timeline.add(TweenMax.set(input, this.getInputTranslationData()));
+			else {
+				timeline.clear();
+				this.handleInputShift();
+			}
 		}
 		if (tag) {
 			TweenMax.set(tag, this.getTagTranslationData());
@@ -130,7 +134,6 @@ export default class BigInput extends Component<Props, State> {
 					onComplete: input.focus.bind(input)
 				});
 		}
-		console.log(this.timeline);
 		return this.timeline;
 	}
 
@@ -214,9 +217,9 @@ export default class BigInput extends Component<Props, State> {
 	private onInputPointerDown = (event: PointerEvent<HTMLInputElement>) => {
 		if (event.currentTarget.disabled) {
 			event.preventDefault();
-			console.log("oofw");
 		}
 	};
+
 
 	render() {
 		const { position, onLabelPointerUp, ...inputProps } = this.props;

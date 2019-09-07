@@ -11,6 +11,7 @@ export default styled.div`
 	grid-template-columns: 100%;
 	grid-template-rows: auto minmax(20px, 10vh) auto auto auto 1fr;
 	grid-column: 1;
+	user-select: none;
 
 	${innerAnchorReset()};
 	@media only screen and (orientation: landscape) and (max-width: ${tablet}) {

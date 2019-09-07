@@ -71,7 +71,7 @@ export default class BigForm extends Component<Props, State> {
 		const { onScreenArray, activeIndex, values } = this.state;
 		const { inputs } = this.props;
 		if (event.keyCode == 13 && values.get<string>(activeIndex, "")) {
-			if (activeIndex + 1 == inputs.length && !onScreenArray.get<boolean>(activeIndex + 1, false)) {
+			if (activeIndex + 1 == inputs.length || onScreenArray.get<boolean>(activeIndex + 1, false)) {
 				this.setState({ activeIndex: -1 });
 			} else {
 				this.setState({
