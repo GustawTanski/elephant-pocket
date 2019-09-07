@@ -29,6 +29,7 @@ export default class BigInput extends Component<Props, State> {
 	private labelRef = createRef<HTMLLabelElement>();
 	private scale = 1;
 	private textAlign = "center";
+	private timeline = new TimelineMax();
 
 	componentDidMount() {
 		this.handleInitialPosition();
@@ -36,8 +37,28 @@ export default class BigInput extends Component<Props, State> {
 
 	componentDidUpdate(prevProps: Props, prevState: State) {
 		const { x, y, position } = this.props;
-		if (prevProps.x != x || prevProps.y != y || prevProps.position != position) {
+		if (prevProps.position != position) {
 			this.handleShift();
+		}
+		if (prevProps.x != x || prevProps.y != y) {
+			this.handleResize();
+		}
+	}
+
+	handleResize() {
+		const input = this.inputRef.current;
+		const tag = this.tagRef.current;
+		const { timeline } = this;
+		const active = timeline.getActive() as gsap.Timeline[];
+		if (input) {
+			if (!active.length) timeline.add(TweenMax.set(input, this.getInputTranslationData()));
+			else {
+				timeline.clear();
+				this.handleInputShift();
+			}
+		}
+		if (tag) {
+			TweenMax.set(tag, this.getTagTranslationData());
 		}
 	}
 
@@ -83,7 +104,6 @@ export default class BigInput extends Component<Props, State> {
 		const { scale, textAlign } = this;
 		if (input) {
 			this.shiftInput(input, position, scale, translationData, textAlign);
-			input.focus();
 		}
 	}
 
@@ -94,22 +114,27 @@ export default class BigInput extends Component<Props, State> {
 		translationData: { x: number; y: number },
 		textAlign: string
 	) {
-		const timeline = new TimelineMax();
+		this.timeline = new TimelineMax();
 		if (position == "inLabel") {
-			timeline
+			this.timeline
 				.to(input, SHIFT_DURATION, { scale, ...translationData, ease: Power1.easeOut })
 				.to(input, FADING_AWAY_DURATION, { opacity: 0, x: translationData.x - FADING_AWAY_SHIFT })
 				.set(input, { x: translationData.x + FADING_AWAY_SHIFT })
 				.to(input, TEXT_ALIGN_JUMP_DURATION, { textAlign, opacity: 1, x: translationData.x });
 		} else {
 			const currentX = input.getBoundingClientRect().left;
-			timeline
+			this.timeline
 				.to(input, FADING_AWAY_DURATION, { opacity: 0, x: currentX + FADING_AWAY_SHIFT })
 				.set(input, { x: currentX - FADING_AWAY_SHIFT })
 				.to(input, TEXT_ALIGN_JUMP_DURATION, { textAlign, opacity: 1, x: currentX })
-				.to(input, SHIFT_DURATION, { scale, ...translationData, ease: Power1.easeOut });
+				.to(input, SHIFT_DURATION, {
+					scale,
+					...translationData,
+					ease: Power1.easeOut,
+					onComplete: input.focus.bind(input)
+				});
 		}
-		return timeline;
+		return this.timeline;
 	}
 
 	private handleTagShift() {
@@ -189,14 +214,26 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
+	private onInputPointerDown = (event: PointerEvent<HTMLInputElement>) => {
+		if (event.currentTarget.disabled) {
+			event.preventDefault();
+		}
+	};
+
+
 	render() {
 		const { position, onLabelPointerUp, ...inputProps } = this.props;
 		const { name } = this.props;
-		const { inputRef, tagRef, labelRef } = this;
+		const { inputRef, tagRef, labelRef, onInputPointerDown } = this;
 		return (
 			<S.BigInputContainer htmlFor={name} ref={labelRef} onPointerUp={onLabelPointerUp}>
 				<S.BigInputTag ref={tagRef}>{name && name.toUpperCase()}</S.BigInputTag>
-				<S.BigInput {...inputProps} ref={inputRef} disabled={position == "inLabel"} />
+				<S.BigInput
+					{...inputProps}
+					onPointerDown={onInputPointerDown}
+					ref={inputRef}
+					disabled={position != "free"}
+				/>
 			</S.BigInputContainer>
 		);
 	}
