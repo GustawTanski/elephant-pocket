@@ -3,7 +3,7 @@ import { rightRounded } from "./mixins";
 import { thirdColor } from "../../cssVariables";
 
 export default styled.div`
-    position: relative;
+    position: sticky;
     font-size: 1rem;
     display: inline-block;
     background: ${thirdColor};

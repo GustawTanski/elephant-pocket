@@ -16,6 +16,7 @@ export default createGlobalStyle`
 	body{
 		overflow-x: hidden;
 		overflow-y: scroll;
+		background-color: ${CSS.firstColor};
 	}
 
 	*, *::before, *::after {
