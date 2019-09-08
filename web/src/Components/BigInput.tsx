@@ -30,9 +30,11 @@ export default class BigInput extends Component<Props, State> {
 	private scale = 1;
 	private textAlign = "center";
 	private timeline = new TimelineMax();
+	private tagTimeline = new TimelineMax();
 
 	componentDidMount() {
 		this.handleInitialPosition();
+		// window.addEventListener("resize", this.handleResize.bind(this));
 	}
 
 	componentDidUpdate(prevProps: Props, prevState: State) {
@@ -48,8 +50,9 @@ export default class BigInput extends Component<Props, State> {
 	handleResize() {
 		const input = this.inputRef.current;
 		const tag = this.tagRef.current;
-		const { timeline } = this;
+		const { timeline, tagTimeline } = this;
 		const active = timeline.getActive() as gsap.Timeline[];
+		const activeTag = tagTimeline.getActive() as gsap.Timeline[];
 		if (input) {
 			if (!active.length) timeline.add(TweenMax.set(input, this.getInputTranslationData()));
 			else {
@@ -58,7 +61,11 @@ export default class BigInput extends Component<Props, State> {
 			}
 		}
 		if (tag) {
-			TweenMax.set(tag, this.getTagTranslationData());
+			if (!activeTag.length) tagTimeline.add(TweenMax.set(tag, this.getTagTranslationData()));
+			else {
+				tagTimeline.clear();
+				this.handleTagShift();
+			}
 		}
 	}
 
@@ -139,9 +146,10 @@ export default class BigInput extends Component<Props, State> {
 
 	private handleTagShift() {
 		const tag = this.tagRef.current;
+		this.tagTimeline = new TimelineMax();
 		if (tag) {
 			const translationData = this.getTagTranslationData();
-			TweenMax.to(tag, SHIFT_DURATION + FADING_AWAY_DURATION + TEXT_ALIGN_JUMP_DURATION, {
+			this.tagTimeline.to(tag, SHIFT_DURATION + FADING_AWAY_DURATION + TEXT_ALIGN_JUMP_DURATION, {
 				...translationData
 			});
 		}
@@ -197,7 +205,7 @@ export default class BigInput extends Component<Props, State> {
 	private getInputDestination(position: positionType) {
 		const label = this.labelRef.current as HTMLLabelElement;
 		const { x, y } = this.props;
-		const tagRect = label.getBoundingClientRect();
+		const labelRect = label.getBoundingClientRect();
 		switch (position) {
 			case "above":
 				return {
@@ -208,31 +216,36 @@ export default class BigInput extends Component<Props, State> {
 				return { x, y };
 			case "inLabel":
 				return {
-					x: tagRect.right + IN_LABEL_X_MARGIN,
-					y: tagRect.top + tagRect.height / 2
+					x: labelRect.right + IN_LABEL_X_MARGIN,
+					y: labelRect.top + labelRect.height / 2
 				};
 		}
 	}
 
 	private onInputPointerDown = (event: PointerEvent<HTMLInputElement>) => {
-		if (event.currentTarget.disabled) {
+		if (event.currentTarget.readOnly) {
 			event.preventDefault();
 		}
 	};
-
 
 	render() {
 		const { position, onLabelPointerUp, ...inputProps } = this.props;
 		const { name } = this.props;
 		const { inputRef, tagRef, labelRef, onInputPointerDown } = this;
 		return (
-			<S.BigInputContainer htmlFor={name} ref={labelRef} onPointerUp={onLabelPointerUp}>
+			<S.BigInputContainer
+				htmlFor={name}
+				ref={labelRef}
+				onPointerUp={onLabelPointerUp}
+				onMouseUp={onLabelPointerUp}
+			>
 				<S.BigInputTag ref={tagRef}>{name && name.toUpperCase()}</S.BigInputTag>
 				<S.BigInput
 					{...inputProps}
+					readOnly={position != "free"}
 					onPointerDown={onInputPointerDown}
+					onMouseDown={onInputPointerDown}
 					ref={inputRef}
-					disabled={position != "free"}
 				/>
 			</S.BigInputContainer>
 		);
