@@ -238,6 +238,7 @@ export default class BigInput extends Component<Props, State> {
 				ref={labelRef}
 				onPointerUp={onLabelPointerUp}
 				onMouseUp={onLabelPointerUp}
+				position={position}
 			>
 				<S.BigInputTag ref={tagRef}>{name && name.toUpperCase()}</S.BigInputTag>
 				<S.BigInput

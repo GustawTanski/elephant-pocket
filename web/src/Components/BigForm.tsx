@@ -10,6 +10,8 @@ import { List } from "immutable";
 
 import BigInput, { positionType } from "./BigInput";
 import * as S from "./styles";
+import BigSubmit from "./BigSubmit";
+import { throwStatement } from "@babel/types";
 
 export interface IInputInfo {
 	type: string;
@@ -17,8 +19,9 @@ export interface IInputInfo {
 	name: string;
 }
 
-interface Props extends FormHTMLAttributes<HTMLFormElement> {
+interface Props {
 	inputs: Array<IInputInfo>;
+	onSubmitPointerUp: (event: PointerEvent<HTMLInputElement>) => void;
 }
 interface State {
 	activeIndex: number;
@@ -42,7 +45,7 @@ export default class BigForm extends Component<Props, State> {
 		type: "submit",
 		placeholder: "SIGN IN",
 		name: "submit"
-	}
+	};
 
 	componentDidMount() {
 		window.addEventListener<"resize">("resize", this.onResize);
@@ -52,7 +55,7 @@ export default class BigForm extends Component<Props, State> {
 
 	componentWillUnmount() {
 		window.removeEventListener<"resize">("resize", this.onResize);
-		window.removeEventListener<"scroll">("scroll", this.scrollBlock)
+		window.removeEventListener<"scroll">("scroll", this.scrollBlock);
 	}
 
 	private onResize = () => {
@@ -60,7 +63,7 @@ export default class BigForm extends Component<Props, State> {
 		this.setState({ windowWidth, windowHeight });
 	};
 
-	private scrollBlock = () => window.scrollTo(0,0);
+	private scrollBlock = () => window.scrollTo(0, 0);
 
 	private onLabelPointerDownCreator(index: number) {
 		return (event: PointerEvent<HTMLLabelElement>) => {
@@ -144,13 +147,19 @@ export default class BigForm extends Component<Props, State> {
 	private onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 	};
-	
 
 	render() {
-		const { inputs, ...elementProps } = this.props;
+		const { inputs, onSubmitPointerUp } = this.props;
+		const { windowHeight, windowWidth, activeIndex } = this.state;
 		return (
-			<S.RegisterView.Content onSubmit={this.onSubmit} {...elementProps} >
+			<S.RegisterView.Content onSubmitCapture={this.onSubmit}>
 				{this.mapPropsToBigInputs()}
+				<BigSubmit
+					x={windowWidth / 2}
+					y={windowHeight / 2}
+					position={activeIndex == -1 ? "free" : "above"}
+					onPointerUp={onSubmitPointerUp}
+				/>
 			</S.RegisterView.Content>
 		);
 	}
