@@ -1,6 +1,8 @@
 import styled, { css } from "styled-components";
 import { firstColor, fourthColor } from "../../cssVariables";
 import { rightRounded } from "./mixins";
+import { horizontalMobileWritingHeight } from "../../breakpoints";
+import { positionType } from "../BigInput";
 
 export default styled.input<{ readOnly: boolean; type?: string }>`
 	left: 0;
@@ -17,7 +19,7 @@ export default styled.input<{ readOnly: boolean; type?: string }>`
 	width: 100%;
 	padding: 0 2.5%;
 	overflow: hidden;
-    pointer-events: all;
+	pointer-events: all;
 	::placeholder {
 		color: inherit;
 		opacity: 0.3;
@@ -36,17 +38,17 @@ export default styled.input<{ readOnly: boolean; type?: string }>`
 			return css`
 				background-color: ${fourthColor};
 				${rightRounded(40)};
-                width: fit-content;
-                padding: .3em .8em;
-                cursor: pointer;
-                /* pointer-events: none; */
+				width: fit-content;
+				padding: 0.3em 0.8em;
+				cursor: pointer;
+				/* pointer-events: none; */
 			`;
 		}
 	}}
 
     /* taking input to front when typing in mobiles */
-    @media only screen and (max-height: 300px) and (orientation: landscape) {
-		z-index: 1000;
-		background-color: ${firstColor};
+    @media only screen and (max-height: ${horizontalMobileWritingHeight}) and (orientation: landscape) {
+		z-index: 1;
+		background-color: ${({ type }) => (type != "submit" ? firstColor : fourthColor)};
 	}
 `;

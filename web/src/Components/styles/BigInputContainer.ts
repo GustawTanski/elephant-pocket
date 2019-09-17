@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 import { positionType } from "../BigInput";
+import { horizontalMobileWritingHeight } from "../../breakpoints";
 
-export default styled.label<{ position: positionType }>`
+export default styled.label<{ position: positionType; htmlFor?: string }>`
 	display: flex;
 	justify-content: flex-end;
 	padding-left: 5vw;
@@ -17,4 +18,16 @@ export default styled.label<{ position: positionType }>`
 			`;
 		}
 	}}
+
+	${({ htmlFor }) => {
+		if (htmlFor == "submit")
+			return css`
+				height: 0;
+				margin: 0;
+			`;
+	}}
+	/* taking input to front when typing in mobiles */
+	@media only screen and (max-height: ${horizontalMobileWritingHeight}) and (orientation: landscape) {
+		opacity: ${({ position }) => (position == "free" ? 1 : 0)};
+	}
 `;

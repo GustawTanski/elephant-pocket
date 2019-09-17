@@ -15,8 +15,9 @@ export default createGlobalStyle`
 
 	body{
 		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: hidden;
 		background-color: ${CSS.firstColor};
+		height: 100vh;
 	}
 
 	*, *::before, *::after {
@@ -27,5 +28,10 @@ export default createGlobalStyle`
 		font-family: ${CSS.mainFont}, Helvetica, sans-serif;
 		font-size: 18px;
 		color: ${CSS.secondColor};
+		height: 100%;
+	}
+
+	#root {
+		height: 100%;
 	}
 `;

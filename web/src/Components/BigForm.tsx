@@ -40,30 +40,19 @@ export default class BigForm extends Component<Props, State> {
 		onScreenArray: List<boolean>([true])
 	};
 	private cursor = 0;
-	private inputsWithSubmit = new Array<IInputInfo>();
-	private submit: IInputInfo = {
-		type: "submit",
-		placeholder: "SIGN IN",
-		name: "submit"
-	};
 
 	componentDidMount() {
 		window.addEventListener<"resize">("resize", this.onResize);
-		// mobile chrome and opera scroll preventing
-		window.addEventListener<"scroll">("scroll", this.scrollBlock);
 	}
 
 	componentWillUnmount() {
 		window.removeEventListener<"resize">("resize", this.onResize);
-		window.removeEventListener<"scroll">("scroll", this.scrollBlock);
 	}
 
 	private onResize = () => {
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 		this.setState({ windowWidth, windowHeight });
 	};
-
-	private scrollBlock = () => window.scrollTo(0, 0);
 
 	private onLabelPointerDownCreator(index: number) {
 		return (event: PointerEvent<HTMLLabelElement>) => {
@@ -149,7 +138,7 @@ export default class BigForm extends Component<Props, State> {
 	};
 
 	render() {
-		const { inputs, onSubmitPointerUp } = this.props;
+		const { onSubmitPointerUp } = this.props;
 		const { windowHeight, windowWidth, activeIndex } = this.state;
 		return (
 			<S.RegisterView.Content onSubmitCapture={this.onSubmit}>
