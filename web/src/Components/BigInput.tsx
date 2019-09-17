@@ -229,7 +229,7 @@ export default class BigInput extends Component<Props, State> {
 	};
 
 	render() {
-		const { position, onLabelPointerUp, ...inputProps } = this.props;
+		const { x, y, position, onLabelPointerUp, ...inputProps } = this.props;
 		const { name } = this.props;
 		const { inputRef, tagRef, labelRef, onInputPointerDown } = this;
 		return (
@@ -238,6 +238,7 @@ export default class BigInput extends Component<Props, State> {
 				ref={labelRef}
 				onPointerUp={onLabelPointerUp}
 				onMouseUp={onLabelPointerUp}
+				position={position}
 			>
 				<S.BigInputTag ref={tagRef}>{name && name.toUpperCase()}</S.BigInputTag>
 				<S.BigInput

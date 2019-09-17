@@ -4,7 +4,8 @@ import { firstColor } from "../../cssVariables";
 
 export default styled.main`
 	background-color: ${firstColor};
-	min-height: 100vh;
+	position: relative;
+	height: 100%;
 	/* overflow-y: scroll; */
 	overflow-x: hidden;
 	width: 100%;

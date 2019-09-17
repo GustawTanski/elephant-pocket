@@ -27,6 +27,6 @@ export default class RegisterViewContent extends Component<{}, State> {
 		},
 	];
 	render() {
-		return <BigForm inputs={this.inputs} />;
+		return <BigForm inputs={this.inputs} onSubmitPointerUp={() => alert("submit")} />;
 	}
 }
