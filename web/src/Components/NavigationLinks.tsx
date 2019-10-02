@@ -1,8 +1,8 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import * as S from "./styles";
-import { transitionHelper } from "./styles/mixins";
+import * as S from "./styled";
+import { transitionHelper } from "./styled/mixins";
 
 interface Props {
 	transitionState?: transitionHelper.transitionStateType;

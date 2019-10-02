@@ -9,7 +9,7 @@ import React, {
 import { List } from "immutable";
 
 import BigInput, { positionType } from "./BigInput";
-import * as S from "./styles";
+import * as S from "./styled";
 import BigSubmit from "./BigSubmit";
 import { throwStatement } from "@babel/types";
 

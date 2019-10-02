@@ -1,6 +1,6 @@
 import React, { Component, createRef, InputHTMLAttributes, PointerEvent } from "react";
 
-import * as S from "./styles";
+import * as S from "./styled";
 import { TweenMax, TimelineMax, Power1 } from "gsap";
 
 export type positionType = "above" | "free" | "inLabel";
@@ -233,22 +233,22 @@ export default class BigInput extends Component<Props, State> {
 		const { name } = this.props;
 		const { inputRef, tagRef, labelRef, onInputPointerDown } = this;
 		return (
-			<S.BigInputContainer
+			<S.BigInput.Container
 				htmlFor={name}
 				ref={labelRef}
 				onPointerUp={onLabelPointerUp}
 				onMouseUp={onLabelPointerUp}
 				position={position}
 			>
-				<S.BigInputTag ref={tagRef}>{name && name.toUpperCase()}</S.BigInputTag>
-				<S.BigInput
+				<S.BigInput.Tag ref={tagRef}>{name && name.toUpperCase()}</S.BigInput.Tag>
+				<S.BigInput.Input
 					{...inputProps}
 					readOnly={position != "free"}
 					onPointerDown={onInputPointerDown}
 					onMouseDown={onInputPointerDown}
 					ref={inputRef}
 				/>
-			</S.BigInputContainer>
+			</S.BigInput.Container>
 		);
 	}
 }

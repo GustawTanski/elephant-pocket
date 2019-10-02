@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from "react";
 
 import Burger from "./Burger";
 import NavigationLinks from "./NavigationLinks";
-import * as breakpoints from "../breakpoints";
+import * as breakpoints from "../globals/breakpoints";
 
 interface State {
 	pageWidth: number;

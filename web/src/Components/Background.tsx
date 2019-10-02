@@ -1,7 +1,7 @@
 import React, { Component, ReactChild } from "react";
 import { connect } from "react-redux";
 
-import * as S from "./styles";
+import * as S from "./styled";
 import { storeType } from "../Redux/store";
 
 interface Props {
