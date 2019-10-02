@@ -3,7 +3,7 @@ import { Transition } from "react-transition-group";
 import { menu } from "react-icons-kit/feather/menu";
 import { x } from "react-icons-kit/feather/x";
 
-import * as S from "./styles";
+import * as S from "./styled";
 
 interface Props {
 	children?: ReactElement;
