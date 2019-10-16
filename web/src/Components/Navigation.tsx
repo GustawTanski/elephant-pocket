@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import React, { Component } from "react";
 
 import Burger from "./Burger";
 import NavigationLinks from "./NavigationLinks";
@@ -12,9 +12,6 @@ interface Props {}
 
 export default class Navigation extends Component<Props, State> {
 	state = { pageWidth: window.innerWidth };
-	onResize = () => {
-		this.setState({ pageWidth: window.innerWidth });
-	};
 
 	shouldComponentUpdate(prevProps: Props, prevState: State): boolean {
 		const tabletWidth = Number.parseInt(breakpoints.tablet);
@@ -35,16 +32,12 @@ export default class Navigation extends Component<Props, State> {
 		window.removeEventListener("resize", this.onResize);
 	}
 
-	didWindowPassedBreakpoint(
-		breakpoint: number,
-		oldWidth: number,
-		newWidth: number
-	): boolean {
+	didWindowPassedBreakpoint(breakpoint: number, oldWidth: number, newWidth: number): boolean {
 		const wasWiderOrEqualToBreakpoint = oldWidth - breakpoint >= 0;
 		const isWiderOrEqualToBreakpoint = newWidth - breakpoint >= 0;
 		return wasWiderOrEqualToBreakpoint !== isWiderOrEqualToBreakpoint;
 	}
-	createRender(): ReactNode {
+	createRender() {
 		const { pageWidth } = this.state;
 		const isWiderThanPhone = pageWidth >= Number.parseInt(breakpoints.tablet);
 		if (!isWiderThanPhone)
@@ -53,10 +46,14 @@ export default class Navigation extends Component<Props, State> {
 					<NavigationLinks isWide={false} />
 				</Burger>
 			);
-		else return <NavigationLinks isWide={true}  />;
+		else return <NavigationLinks isWide={true} />;
 	}
 
-	render(): ReactNode {
+	onResize = () => {
+		this.setState({ pageWidth: window.innerWidth });
+	};
+
+	render() {
 		return this.createRender();
 	}
 }

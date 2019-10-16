@@ -1,8 +1,9 @@
 import React, { Component, createRef, PointerEvent } from "react";
 
-import BigInput, { positionType } from "./BigInput";
+import BigInput, { Props as IInputProps } from "./BigInput";
+import { positionType } from "../globals/interfaces&types";
 
-interface Props  {
+interface Props extends IInputProps {
 	x: number;
     y: number;
     position: positionType;

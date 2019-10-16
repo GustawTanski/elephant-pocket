@@ -10,5 +10,3 @@ export default (props: any): React.ReactElement => {
 		</S.Logo>
 	);
 };
-
-

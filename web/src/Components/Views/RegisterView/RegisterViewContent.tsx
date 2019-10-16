@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import * as S from "../../styled";
 
-import BigForm, { IInputInfo } from "../../BigForm";
+import BigForm from "../../BigForm";
+import { IInputInfo } from "../../../globals/interfaces&types";
 
 interface State {
 	emailValue: string;

@@ -8,16 +8,10 @@ import React, {
 } from "react";
 import { List } from "immutable";
 
-import BigInput, { positionType } from "./BigInput";
-import * as S from "./styled";
+import BigInput from "./BigInput";
 import BigSubmit from "./BigSubmit";
-import { throwStatement } from "@babel/types";
-
-export interface IInputInfo {
-	type: string;
-	placeholder: string;
-	name: string;
-}
+import { positionType, IInputInfo } from "../globals/interfaces&types";
+import * as S from "./styled";
 
 interface Props {
 	inputs: Array<IInputInfo>;
@@ -49,12 +43,12 @@ export default class BigForm extends Component<Props, State> {
 		window.removeEventListener<"resize">("resize", this.onResize);
 	}
 
-	private onResize = () => {
+	onResize = () => {
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 		this.setState({ windowWidth, windowHeight });
 	};
 
-	private onLabelPointerDownCreator(index: number) {
+	onLabelPointerDownCreator(index: number) {
 		return (event: PointerEvent<HTMLLabelElement>) => {
 			const { values, activeIndex } = this.state;
 			if (activeIndex != index && values.get<string>(activeIndex, "")) {
@@ -63,14 +57,14 @@ export default class BigForm extends Component<Props, State> {
 		};
 	}
 
-	private setCaret(input: HTMLInputElement) {
+	setCaret(input: HTMLInputElement) {
 		const cursor = this.cursor;
 		return () => {
 			input.setSelectionRange(cursor, cursor);
 		};
 	}
 
-	private onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+	onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
 		const { onScreenArray, activeIndex, values } = this.state;
 		const { inputs } = this.props;
 		if (event.keyCode == 13 && values.get<string>(activeIndex, "")) {
@@ -85,12 +79,12 @@ export default class BigForm extends Component<Props, State> {
 		}
 	}
 
-	private mapPropsToBigInputs() {
+	mapPropsToBigInputs() {
 		const { inputs } = this.props;
 		return inputs.map(this.createBigInput);
 	}
 
-	private onChangeCreator(index: number, type: string) {
+	onChangeCreator(index: number, type: string) {
 		const { values } = this.state;
 		return (event: ChangeEvent<HTMLInputElement>) => {
 			const { currentTarget } = event;
@@ -106,7 +100,7 @@ export default class BigForm extends Component<Props, State> {
 		};
 	}
 
-	private getInputPosition(index: number): positionType {
+	getInputPosition(index: number): positionType {
 		const { activeIndex, onScreenArray } = this.state;
 		const onScreen = onScreenArray.get<boolean>(index, false);
 		let result: positionType;
@@ -115,7 +109,7 @@ export default class BigForm extends Component<Props, State> {
 		return result;
 	}
 
-	private createBigInput = (input: IInputInfo, index: number) => {
+	createBigInput = (input: IInputInfo, index: number) => {
 		const { windowWidth, windowHeight, values } = this.state;
 		return (
 			<BigInput
@@ -133,7 +127,7 @@ export default class BigForm extends Component<Props, State> {
 		);
 	};
 
-	private onSubmit = (event: FormEvent<HTMLFormElement>) => {
+	onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 	};
 

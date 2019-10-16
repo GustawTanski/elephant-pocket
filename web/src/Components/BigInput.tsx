@@ -1,11 +1,10 @@
 import React, { Component, createRef, InputHTMLAttributes, PointerEvent } from "react";
-
-import * as S from "./styled";
 import { TweenMax, TimelineMax, Power1 } from "gsap";
 
-export type positionType = "above" | "free" | "inLabel";
+import * as S from "./styled";
+import { positionType } from "../globals/interfaces&types";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+export interface Props extends InputHTMLAttributes<HTMLInputElement> {
 	position: positionType;
 	x: number;
 	y: number;
@@ -22,19 +21,19 @@ const SHIFT_DURATION = 0.5;
 const TEXT_ALIGN_JUMP_DURATION = 0.3;
 const FADING_AWAY_DURATION = 0.15;
 const FADING_AWAY_SHIFT = 10;
+
 export default class BigInput extends Component<Props, State> {
 	state = { scalingFactor: 0.5 };
-	private inputRef = createRef<HTMLInputElement>();
-	private tagRef = createRef<HTMLDivElement>();
-	private labelRef = createRef<HTMLLabelElement>();
-	private scale = 1;
-	private textAlign = "center";
-	private timeline = new TimelineMax();
-	private tagTimeline = new TimelineMax();
+	inputRef = createRef<HTMLInputElement>();
+	tagRef = createRef<HTMLDivElement>();
+	labelRef = createRef<HTMLLabelElement>();
+	scale = 1;
+	textAlign = "center";
+	timeline = new TimelineMax();
+	tagTimeline = new TimelineMax();
 
 	componentDidMount() {
 		this.handleInitialPosition();
-		// window.addEventListener("resize", this.handleResize.bind(this));
 	}
 
 	componentDidUpdate(prevProps: Props, prevState: State) {
@@ -69,12 +68,12 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private handleInitialPosition() {
+	handleInitialPosition() {
 		this.handleInputInitialPosition();
 		this.handleTagInitialPosition();
 	}
 
-	private handleInputInitialPosition() {
+	handleInputInitialPosition() {
 		const { position } = this.props;
 		const input = this.inputRef.current;
 		if (input) {
@@ -87,7 +86,7 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private handleTagInitialPosition() {
+	handleTagInitialPosition() {
 		const { position } = this.props;
 		const tag = this.tagRef.current;
 		if (tag) {
@@ -98,13 +97,13 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private handleShift() {
+	handleShift() {
 		this.setInputProperties();
 		this.handleInputShift();
 		this.handleTagShift();
 	}
 
-	private handleInputShift() {
+	handleInputShift() {
 		const { position } = this.props;
 		const translationData = this.getInputTranslationData(position);
 		const input = this.inputRef.current;
@@ -114,7 +113,7 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private shiftInput(
+	shiftInput(
 		input: HTMLInputElement,
 		position: positionType,
 		scale: number,
@@ -144,7 +143,7 @@ export default class BigInput extends Component<Props, State> {
 		return this.timeline;
 	}
 
-	private handleTagShift() {
+	handleTagShift() {
 		const tag = this.tagRef.current;
 		this.tagTimeline = new TimelineMax();
 		if (tag) {
@@ -155,7 +154,7 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private setInputProperties() {
+	setInputProperties() {
 		const { position } = this.props;
 		const { scalingFactor } = this.state;
 		if (position == "inLabel") {
@@ -167,7 +166,7 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private getInputTranslationData(position = this.props.position) {
+	getInputTranslationData(position = this.props.position) {
 		const input = this.inputRef.current as HTMLInputElement;
 		const inputRect = this.getNonScaledInputRect(input);
 		const destination = this.getInputDestination(position);
@@ -180,7 +179,7 @@ export default class BigInput extends Component<Props, State> {
 		return transition;
 	}
 
-	private getTagTranslationData() {
+	getTagTranslationData() {
 		if (this.props.position == "inLabel") return { x: 0 };
 		const label = this.labelRef.current as HTMLElement;
 		const labelRect = label.getBoundingClientRect();
@@ -193,7 +192,7 @@ export default class BigInput extends Component<Props, State> {
 		return transition;
 	}
 
-	private getNonScaledInputRect(input: HTMLInputElement) {
+	getNonScaledInputRect(input: HTMLInputElement) {
 		const initialWidth = input.getBoundingClientRect().width;
 		TweenMax.set(input, { scale: 1 });
 		const inputRect = input.getBoundingClientRect();
@@ -202,7 +201,7 @@ export default class BigInput extends Component<Props, State> {
 		return inputRect;
 	}
 
-	private getInputDestination(position: positionType) {
+	getInputDestination(position: positionType) {
 		const label = this.labelRef.current as HTMLLabelElement;
 		const { x, y } = this.props;
 		const labelRect = label.getBoundingClientRect();
@@ -222,7 +221,7 @@ export default class BigInput extends Component<Props, State> {
 		}
 	}
 
-	private onInputPointerDown = (event: PointerEvent<HTMLInputElement>) => {
+	onInputPointerDown = (event: PointerEvent<HTMLInputElement>) => {
 		if (event.currentTarget.readOnly) {
 			event.preventDefault();
 		}
