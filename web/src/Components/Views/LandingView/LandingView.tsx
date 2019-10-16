@@ -4,7 +4,6 @@ import TopBar from "../../TopBar";
 import Background from "../../Background";
 import LandingViewContent from "./LandingViewContent";
 
-
 interface Props {
 	history: { push: (path: string) => void };
 }

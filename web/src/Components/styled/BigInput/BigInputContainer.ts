@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
-import { positionType } from "../../BigInput";
+
 import { horizontalMobileWritingHeight } from "../../../globals/breakpoints";
+import { positionType } from "../../../globals/interfaces&types";
 
 export default styled.label<{ position: positionType; htmlFor?: string }>`
 	display: flex;
