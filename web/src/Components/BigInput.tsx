@@ -31,6 +31,7 @@ export default class BigInput extends Component<Props, State> {
 	textAlign = "center";
 	timeline = new TimelineMax();
 	tagTimeline = new TimelineMax();
+	labelTop = 0;
 
 	componentDidMount() {
 		this.handleInitialPosition();
@@ -47,6 +48,7 @@ export default class BigInput extends Component<Props, State> {
 	}
 
 	handleResize() {
+		this.setLabelTop();
 		const input = this.inputRef.current;
 		const tag = this.tagRef.current;
 		const { timeline, tagTimeline } = this;
@@ -69,8 +71,15 @@ export default class BigInput extends Component<Props, State> {
 	}
 
 	handleInitialPosition() {
+		this.setLabelTop();
 		this.handleInputInitialPosition();
 		this.handleTagInitialPosition();
+	}
+
+	// this method is necessary to handle mobile safari keyboard shift
+	setLabelTop() {
+		const label = this.labelRef.current;
+		if (label) this.labelTop = label.getBoundingClientRect().top;
 	}
 
 	handleInputInitialPosition() {
@@ -211,13 +220,14 @@ export default class BigInput extends Component<Props, State> {
 					x,
 					y: ABOVE_Y_POSITION
 				};
-			case "free":
-				return { x, y };
 			case "inLabel":
 				return {
 					x: labelRect.right + IN_LABEL_X_MARGIN,
-					y: labelRect.top + labelRect.height / 2
+					y: this.labelTop + labelRect.height / 2
 				};
+			case "free":
+			default:
+				return { x, y };
 		}
 	}
 

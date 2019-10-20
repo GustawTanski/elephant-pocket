@@ -37,7 +37,7 @@ export default styled.input<{ readOnly: boolean; type?: string }>`
 			return css`
 				background-color: ${fourthColor};
 				${rightRounded(40)};
-				width: fit-content;
+				width: unset;
 				padding: 0.3em 0.8em;
 				cursor: pointer;
 				/* pointer-events: none; */

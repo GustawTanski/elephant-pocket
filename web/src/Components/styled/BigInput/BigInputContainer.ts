@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { horizontalMobileWritingHeight } from "../../../globals/breakpoints";
 import { positionType } from "../../../globals/interfaces&types";
 
-export default styled.label<{ position: positionType; htmlFor?: string }>`
+export default styled.label<{ position: positionType; htmlFor?: string}>`
 	display: flex;
 	justify-content: flex-end;
 	padding-left: 5vw;
@@ -11,7 +11,6 @@ export default styled.label<{ position: positionType; htmlFor?: string }>`
 	width: 45%;
 	margin: 0.5em 0;
 	align-self: flex-start;
-
 	${({ position }) => {
 		if (position != "inLabel") {
 			return css`

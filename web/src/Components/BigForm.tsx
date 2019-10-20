@@ -12,10 +12,12 @@ import BigInput from "./BigInput";
 import BigSubmit from "./BigSubmit";
 import { positionType, IInputInfo } from "../globals/interfaces&types";
 import * as S from "./styled";
+import Loader from "./Loader";
 
 interface Props {
 	inputs: Array<IInputInfo>;
 	onSubmitPointerUp: (event: PointerEvent<HTMLInputElement>) => void;
+	isLoading: boolean;
 }
 interface State {
 	activeIndex: number;
@@ -132,17 +134,21 @@ export default class BigForm extends Component<Props, State> {
 	};
 
 	render() {
-		const { onSubmitPointerUp } = this.props;
+		const { onSubmitPointerUp, isLoading } = this.props;
 		const { windowHeight, windowWidth, activeIndex } = this.state;
 		return (
 			<S.RegisterView.Content onSubmitCapture={this.onSubmit}>
 				{this.mapPropsToBigInputs()}
-				<BigSubmit
-					x={windowWidth / 2}
-					y={windowHeight / 2}
-					position={activeIndex == -1 ? "free" : "above"}
-					onPointerUp={onSubmitPointerUp}
-				/>
+				{!isLoading ? (
+					<BigSubmit
+						x={windowWidth / 2}
+						y={windowHeight / 2}
+						position={activeIndex == -1 ? "free" : "above"}
+						onPointerUp={onSubmitPointerUp}
+					/>
+				) : (
+					<Loader />
+				)}
 			</S.RegisterView.Content>
 		);
 	}
