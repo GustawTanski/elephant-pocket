@@ -6,7 +6,7 @@ describe("Uuid", () => {
 	it("should accept correct uuid and store it", () => {
 		const sampleUuid = uuidv4();
 		const uuid = new Uuid(sampleUuid);
-		expect(uuid.uuid).toBe(sampleUuid);
+		expect(uuid.toString()).toBe(sampleUuid);
     });
     
     it("should throw an error, when uuid is not correct", () => {

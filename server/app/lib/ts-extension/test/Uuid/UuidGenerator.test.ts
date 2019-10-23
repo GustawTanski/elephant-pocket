@@ -11,6 +11,6 @@ describe("UuidGenerator", () => {
 	it("should generate Uuid object", () => {
 		const uuid = UuidGenerator.generate();
 		expect(uuid).toBeInstanceOf(Uuid);
-		expect(validate(uuid.uuid)).toBe(true);
+		expect(validate(uuid.toString())).toBe(true);
 	});
 });
