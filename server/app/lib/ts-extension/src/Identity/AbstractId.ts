@@ -7,7 +7,7 @@ export default abstract class AbstractId<T> {
 
 	protected abstract isValid(id: T): boolean;
 
-	abstract toScalar(): string;
+	abstract toString(): string;
 
 	private validate(id: T) {
 		if (!this.isValid(id)) throw Error("Invalid id!");

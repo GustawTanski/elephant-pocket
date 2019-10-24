@@ -6,7 +6,7 @@ export interface IUserInput {
 	name?: string;
 	email: string;
 	password: string;
-	id?: UserId;
+	id?: UserId | string;
 }
 
 type IUser = IUserInput & { id: UserId };
@@ -35,7 +35,7 @@ export default class User implements IUser {
 
 	private handleId(base: IUserInput): UserId {
 		let id: UserId;
-		if (base.id instanceof UserId) id = new UserId(base.id.toScalar());
+		if (base.id instanceof UserId) id = new UserId(base.id.toString());
 		else id = new UserId(base.id);
 		return id;
 	}

@@ -5,7 +5,7 @@ export default class Validator {
 	static string = () => jf.string();
 	static objectOptional = () => jf.object().optional();
 	static objectRequired = () => jf.object().required();
-
+	// TODO better password validation
 	static password = () =>
 		jf
 			.string()
