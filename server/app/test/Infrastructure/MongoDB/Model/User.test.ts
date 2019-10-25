@@ -1,20 +1,18 @@
 import mongoose from "mongoose";
+
 import { UserModel, UserMapper } from "../../../../src/Infrastructure/MongoDB/Model/User";
 import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
-
-import dotenv from "dotenv";
 import User from "../../../../src/Core/Component/User/Domain/User/User";
 
 describe("User mongoDB model", () => {
 	beforeAll(async () => {
-		dotenv.config();
-		const { DB_URI } = process.env;
-		if (DB_URI)
-			await mongoose.connect(DB_URI, {
+		const { MONGO_URL } = process.env;
+		if (MONGO_URL)
+			await mongoose.connect(MONGO_URL, {
 				useNewUrlParser: true,
 				useUnifiedTopology: true
 			});
-		else throw Error("DB_URI wasn't provided!");
+		else throw Error("MONGO_URL wasn't provided!");
 	});
 	afterAll(async () => {
 		await mongoose.connection.close();
