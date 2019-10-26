@@ -1,6 +1,7 @@
-import Validator from "../../../../../../lib/ts-extension/src/Validation/Validator";
+import Validator, {
+	Validatable
+} from "../../../../../../lib/ts-extension/src/Validation/Validator";
 import UserId from "../../../../SharedKernel/Component/User/Domain/User/UserId";
-import * as jf from "joiful";
 
 export interface IUserInput {
 	name?: string;
@@ -11,7 +12,7 @@ export interface IUserInput {
 
 type IUser = IUserInput & { id: UserId };
 
-export default class User implements IUser {
+export default class User extends Validatable implements IUser {
 	@(Validator.string().optional())
 	name?: string;
 
@@ -25,8 +26,9 @@ export default class User implements IUser {
 	id: UserId;
 
 	constructor(base: IUserInput) {
+		super();
 		const id = this.handleId(base);
-		this.validate({ ...base, id });
+		this.validate<typeof User>({ ...base, id });
 		this.email = base.email;
 		this.password = base.password;
 		this.name = base.name;
@@ -38,10 +40,5 @@ export default class User implements IUser {
 		if (base.id instanceof UserId) id = new UserId(base.id.toString());
 		else id = new UserId(base.id);
 		return id;
-	}
-
-	private validate(base: IUser) {
-		const { error } = Validator.validateAsClass(base, User);
-		if (error) throw new Error(error.details[0].message);
 	}
 }
