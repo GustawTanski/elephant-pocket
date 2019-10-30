@@ -6,6 +6,7 @@ export default interface IPersistanceServicePort<T extends IObjectWithId> {
 	delete: (entityId: T["id"]) => Promise<T>;
 	findAll: () => Promise<T[]>;
 	findById: (entityId: T["id"]) => Promise<T>;
+	findByEmail: (email: string) => Promise<T>;
 	// TODO Creating IQueryPort
 	findOne: (query: IQuery) => Promise<T>;
 }

@@ -1,4 +1,6 @@
-export default abstract class AbstractId<T> {
+import ValueObject from "../ValueObject";
+
+export default abstract class AbstractId<T> implements ValueObject {
 	protected _id: T;
 
 	constructor(id: T) {
@@ -6,6 +8,8 @@ export default abstract class AbstractId<T> {
 	}
 
 	protected abstract isValid(id: T): boolean;
+
+	abstract equals(comparedObject: this): boolean;
 
 	abstract toString(): string;
 

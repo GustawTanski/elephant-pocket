@@ -12,33 +12,35 @@ export interface IUserInput {
 
 type IUser = IUserInput & { id: UserId };
 
-export default class User extends Validatable implements IUser {
-	@(Validator.string().optional())
-	name?: string;
-
-	@Validator.email()
-	email: string;
-
-	@Validator.password()
-	password: string;
-
-	@Validator.objectRequired()
-	id: UserId;
-
-	constructor(base: IUserInput) {
-		super();
-		const id = this.handleId(base);
-		this.validate<typeof User>({ ...base, id });
-		this.email = base.email;
-		this.password = base.password;
-		this.name = base.name;
-		this.id = id;
+export default class User implements IUser {
+	get name() {
+		return this._name;
+	}
+	get password() {
+		return this._password;
+	}
+	get email() {
+		return this._email;
+	}
+	get id() {
+		return this._id;
 	}
 
-	private handleId(base: IUserInput): UserId {
-		let id: UserId;
-		if (base.id instanceof UserId) id = new UserId(base.id.toString());
-		else id = new UserId(base.id);
-		return id;
+	constructor(base: IUserInput) {
+		const id = this.handleIdType(base.id);
+		this._email = base.email;
+		this._password = base.password;
+		this._name = base.name;
+		this._id = id;
+	}
+
+	private _name?: string;
+	private _email: string;
+	private _password: string;
+	private _id: UserId;
+
+	private handleIdType(id?: UserId | string): UserId {
+		if (id instanceof UserId) return new UserId(id.toString());
+		else return new UserId(id);
 	}
 }

@@ -15,13 +15,6 @@ describe("User entity", () => {
 		expect(user).toBeInstanceOf(User);
 		expect(user).toMatchObject(properUser);
 	});
-	it("should throw an error when email or password are not proper", () => {
-		expect.assertions(2);
-		const wrongEmailUser = { email: "Dynamic Applications Architect", password: "multi-byte" };
-		const wrongPasswordUser = { email: "Towne.Bo@yahoo.com", password: "short" };
-		expect(() => new User(wrongEmailUser)).toThrowError();
-		expect(() => new User(wrongPasswordUser)).toThrowError();
-	});
 	it("should accept any string as name", () => {
 		expect.assertions(2);
 		const user = new User(userWithName);

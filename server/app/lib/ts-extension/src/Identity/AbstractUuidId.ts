@@ -9,6 +9,10 @@ export default abstract class AbstractUuidId extends AbstractId<Uuid> {
 		else super(UuidGenerator.generate());
 	}
 
+	equals(comparedObject: AbstractUuidId): boolean {
+		return this._id.equals(comparedObject._id);
+	}
+
 	toString(): string {
 		return this._id.toString();
 	}

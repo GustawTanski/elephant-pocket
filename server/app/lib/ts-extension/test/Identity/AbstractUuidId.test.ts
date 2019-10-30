@@ -1,6 +1,5 @@
 import AbstractUuidId from "../../src/Identity/AbstractUuidId";
 import UuidGenerator from "../../src/Uuid/UuidGenerator";
-import Uuid from "../../src/Uuid/Uuid";
 import validate from "uuid-validate";
 
 class TestUserId extends AbstractUuidId {}
@@ -23,5 +22,14 @@ describe("AbstractUuidId descendant", () => {
 	it("should accept Uuid object", () => {
 		const userId = new TestUserId(UuidGenerator.generate());
 		expect(validate(userId.toString())).toBe(true);
+	});
+
+	it("should compare in correct way", () => {
+		expect.assertions(2);
+		const userId1 = new TestUserId();
+		const userId1Prim = new TestUserId(userId1.toString());
+		const userId2 = new TestUserId();
+		expect(userId1.equals(userId1Prim)).toBe(true);
+		expect(userId1.equals(userId2)).toBe(false);
 	});
 });

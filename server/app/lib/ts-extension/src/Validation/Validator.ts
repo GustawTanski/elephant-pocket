@@ -17,7 +17,13 @@ export function validateFunc<T extends AnyClass>(
 }
 
 export abstract class Validatable {
-	protected validate = validateFunc;
+	protected validate<T extends AnyClass>(
+		base: Partial<T> & { [propName: string]: any },
+		Class: T = this.constructor as T
+	) {
+		const { error } = Validator.validateAsClass(base, Class, { allowUnknown: true });
+		if (error) throw new Error(error.details[0].message);
+	}
 }
 
 export default class Validator {

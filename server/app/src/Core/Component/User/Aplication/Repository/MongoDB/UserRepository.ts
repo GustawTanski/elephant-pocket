@@ -9,12 +9,18 @@ export default class UserRepository implements IUserRepository {
 	constructor(persistanceService: IPersistanceServicePort<User>) {
 		this.persistanceService = persistanceService;
 	}
-	save(user: User): Promise<User> {
-		return this.persistanceService.save(user);
+	async save(user: User): Promise<void> {
+		await this.persistanceService.save(user);
+		return;
 	}
 
-	delete(id: UserId): Promise<User> {
-		return this.persistanceService.delete(id);
+	async delete(id: UserId): Promise<void> {
+		await this.persistanceService.delete(id);
+		return;
+	}
+
+	findOneByEmail(email: string): Promise<User> {
+		return this.persistanceService.findByEmail(email);
 	}
 
 	findOneById(id: UserId): Promise<User> {
