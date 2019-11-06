@@ -1,7 +1,6 @@
-import Validator from "../../../../../../lib/ts-extension/src/Validation/Validator";
+import Validator from "../../../../../../lib/ts-extension/src/Validation/Validator"
 import InvalidArgumentError from "../../../../SharedKernel/Error/InvalidArgumentError";
 import UuidGenerator from "../../../../../../lib/ts-extension/src/Uuid/UuidGenerator";
-import AppLogicError from "../../../../SharedKernel/Error/AppLogicError";
 
 interface IUserValidation {
 	email: string;
@@ -10,28 +9,21 @@ interface IUserValidation {
 	[propName: string]: any;
 }
 
-export default class UserValidationService implements IUserValidation {
-	@Validator.email()
-	email: string;
-
-	@Validator.password({ regex: [/[a-z]/, /[A-Z]/, /[0-9]/] })
-	password: string;
-
-	@Validator.string()
-	name?: string;
-
-	constructor(base: IUserValidation) {
-		this.email = base.email;
-		this.password = base.password;
-		this.name = base.name;
-		throw new AppLogicError(
-			"This class is for validation purpose only but there was and attempt to instantiate it!"
-		);
-	}
+export default abstract class UserValidationService {
+	static validator = new Validator({
+		email: Validator.email(),
+		password: Validator.password({ regex: [/[a-z]/, /[A-Z]/, /[0-9]/] }),
+		name: Validator.string()
+	});
 
 	static validateId(id: string) {
 		if (!UuidGenerator.validate(id))
 			throw new InvalidArgumentError(`Provided id: ${id} is not a valid UserId!`);
+	}
+
+	static validateEmail(email: string) {
+		const { error } = Validator.email().validate(email);
+		if (error) throw new InvalidArgumentError(error.details[0].message);
 	}
 
 	static validateAll(user: IUserValidation & { id: string }) {
@@ -40,7 +32,7 @@ export default class UserValidationService implements IUserValidation {
 	}
 
 	static validateParams(validatedObject: IUserValidation): void {
-		const { error } = Validator.validateAsClass(validatedObject, UserValidationService);
+		const { error } = this.validator.validate(validatedObject);
 		if (error) throw new InvalidArgumentError(error.details[0].message);
 	}
 }

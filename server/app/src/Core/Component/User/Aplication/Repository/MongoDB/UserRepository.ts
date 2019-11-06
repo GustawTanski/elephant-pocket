@@ -1,12 +1,12 @@
 import IUserRepository from "../UserRepositoryInterface";
 import User from "../../../Domain/User/User";
-import IPersistanceServicePort from "../../../../../Port/Persistence/PersistanceServicePort";
+import IPersistanceService from "../../../../../Port/Persistence/PersistanceServiceInterface";
 import UserId from "../../../../../SharedKernel/Component/User/Domain/User/UserId";
 
 export default class UserRepository implements IUserRepository {
-	private persistanceService: IPersistanceServicePort<User>;
+	private persistanceService: IPersistanceService<User>;
 
-	constructor(persistanceService: IPersistanceServicePort<User>) {
+	constructor(persistanceService: IPersistanceService<User>) {
 		this.persistanceService = persistanceService;
 	}
 	async save(user: User): Promise<void> {
@@ -30,8 +30,4 @@ export default class UserRepository implements IUserRepository {
 	findAll(): Promise<User[]> {
 		return this.persistanceService.findAll();
 	}
-
-	// findOneByEmail(email: string): Promise<User>{
-	// 	console.error("Not yet ")
-	// }
 }

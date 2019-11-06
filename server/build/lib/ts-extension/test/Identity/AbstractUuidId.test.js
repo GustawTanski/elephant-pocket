@@ -45,4 +45,12 @@ describe("AbstractUuidId descendant", function () {
         var userId = new TestUserId(UuidGenerator_1.default.generate());
         expect(uuid_validate_1.default(userId.toString())).toBe(true);
     });
+    it("should compare in correct way", function () {
+        expect.assertions(2);
+        var userId1 = new TestUserId();
+        var userId1Prim = new TestUserId(userId1.toString());
+        var userId2 = new TestUserId();
+        expect(userId1.equals(userId1Prim)).toBe(true);
+        expect(userId1.equals(userId2)).toBe(false);
+    });
 });

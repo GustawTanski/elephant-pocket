@@ -17,7 +17,6 @@ export interface IUserDocument extends Document {
 }
 
 export const UserSchema = new Schema({
-	// TODO email validating
 	email: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
 	name: { type: String, required: false },

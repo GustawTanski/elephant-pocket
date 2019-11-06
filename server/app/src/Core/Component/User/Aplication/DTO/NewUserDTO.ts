@@ -1,8 +1,4 @@
-export interface INewUserDTO {
-	email: string;
-	password: string;
-	name?: string;
-}
+import INewUserDTO from "../../../../Port/Service/User/NewUserDTOInterface";
 
 export default class NewUserDTO implements INewUserDTO {
 	email: string;

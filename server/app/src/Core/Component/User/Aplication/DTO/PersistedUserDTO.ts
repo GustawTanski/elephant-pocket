@@ -1,9 +1,4 @@
-export interface IPersistedUserDTO {
-	email: string;
-	name?: string;
-	password: string;
-	id: string;
-}
+import IPersistedUserDTO from "../../../../Port/Service/User/PersistedUserDTOInterface";
 
 export default class PersistedUserDTO implements IPersistedUserDTO {
 	email: string;
@@ -17,5 +12,4 @@ export default class PersistedUserDTO implements IPersistedUserDTO {
 		this.name = base.name;
 		this.id = base.id;
 	}
-
 }

@@ -30,13 +30,6 @@ describe("User entity", function () {
         expect(user).toBeInstanceOf(User_1.default);
         expect(user).toMatchObject(properUser);
     });
-    it("should throw an error when email or password are not proper", function () {
-        expect.assertions(2);
-        var wrongEmailUser = { email: "Dynamic Applications Architect", password: "multi-byte" };
-        var wrongPasswordUser = { email: "Towne.Bo@yahoo.com", password: "short" };
-        expect(function () { return new User_1.default(wrongEmailUser); }).toThrowError();
-        expect(function () { return new User_1.default(wrongPasswordUser); }).toThrowError();
-    });
     it("should accept any string as name", function () {
         expect.assertions(2);
         var user = new User_1.default(userWithName);

@@ -1,19 +1,19 @@
 import User from "../../Core/Component/User/Domain/User/User";
 import { UserModel, UserMapper, IUserDocument } from "./Model/User";
-import IPersistanceServicePort from "../../Core/Port/Persistence/PersistanceServicePort";
+import IPersistanceService from "../../Core/Port/Persistence/PersistanceServiceInterface";
 import UserId from "../../Core/SharedKernel/Component/User/Domain/User/UserId";
-import IQuery from "../../Core/Port/Persistence/QueryPort";
+import IQuery from "../../Core/Port/Persistence/QueryPortInterface";
 import EmptyQueryError from "../../Core/Port/Persistence/Error/EmptyQueryError";
 import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
 // implements IPersistanceServicePort<User>
-export default class MongoDBUserPersistanceService implements IPersistanceServicePort<User> {
+export default class MongoDBUserPersistanceService implements IPersistanceService<User> {
 	UserModel = UserModel;
 
 	constructor() {}
 
 	private async add(user: User): Promise<IUserDocument> {
 		const persistedUser = new this.UserModel(UserMapper.toDocumentProperties(user));
-		return await persistedUser.save();
+		return persistedUser.save();
 	}
 
 	async save(user: User): Promise<User> {

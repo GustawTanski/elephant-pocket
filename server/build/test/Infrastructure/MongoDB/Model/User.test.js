@@ -53,25 +53,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importDefault(require("mongoose"));
 var User_1 = require("../../../../src/Infrastructure/MongoDB/Model/User");
 var UuidGenerator_1 = __importDefault(require("../../../../lib/ts-extension/src/Uuid/UuidGenerator"));
-var dotenv_1 = __importDefault(require("dotenv"));
 var User_2 = __importDefault(require("../../../../src/Core/Component/User/Domain/User/User"));
 describe("User mongoDB model", function () {
     beforeAll(function () { return __awaiter(_this, void 0, void 0, function () {
-        var DB_URI;
+        var MONGO_URL;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    dotenv_1.default.config();
-                    DB_URI = process.env.DB_URI;
-                    if (!DB_URI) return [3 /*break*/, 2];
-                    return [4 /*yield*/, mongoose_1.default.connect(DB_URI, {
+                    MONGO_URL = process.env.MONGO_URL;
+                    if (!MONGO_URL) return [3 /*break*/, 2];
+                    return [4 /*yield*/, mongoose_1.default.connect(MONGO_URL, {
                             useNewUrlParser: true,
                             useUnifiedTopology: true
                         })];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 3];
-                case 2: throw Error("DB_URI wasn't provided!");
+                case 2: throw Error("MONGO_URL wasn't provided!");
                 case 3: return [2 /*return*/];
             }
         });

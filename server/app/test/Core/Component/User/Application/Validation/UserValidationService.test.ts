@@ -1,11 +1,14 @@
 import UserValidationService from "../../../../../../src/Core/Component/User/Aplication/Validation/UserValidationService";
 import InvalidArgumentError from "../../../../../../src/Core/SharedKernel/Error/InvalidArgumentError";
 import UserId from "../../../../../../src/Core/SharedKernel/Component/User/Domain/User/UserId";
-import AppLogicError from "../../../../../../src/Core/SharedKernel/Error/AppLogicError";
 
 describe("UserValidationService", () => {
 	it("should throw InvalidArgumentError when wrong id is provided", () => {
 		expect(() => UserValidationService.validateId("not-valid-id")).toThrow(InvalidArgumentError);
+	});
+
+	it("should throw InvalidArgumentError when wrong email is provided", () => {
+		expect(() => UserValidationService.validateEmail("not-valid-email")).toThrow(InvalidArgumentError);
 	});
 
 	it("should throw InvalidArgumentError when wrong email or password provided", () => {
@@ -39,8 +42,4 @@ describe("UserValidationService", () => {
 		expect(validateParamsSpy).toBeCalled();
 	});
 
-	it("should throw AppLogicError when there was an attempt to instantiate it", () => {
-		const user = { email: "Noemi.Jakubowski@asd.pl", password: "Research12" };
-		expect(() => new UserValidationService(user)).toThrow(AppLogicError);
-	});
 });

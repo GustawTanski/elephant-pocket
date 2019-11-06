@@ -6,7 +6,6 @@ import AppRuntimeError from "../../../../../../src/Core/SharedKernel/Error/AppRu
 
 export default class MockedUserRepository implements IUserRepository {
 	async save(user: User): Promise<void> {
-		debugger;
 		const persistedUserIndex = this.users.findIndex(persistedUser =>
 			persistedUser.id.equals(user.id)
 		);
@@ -20,7 +19,7 @@ export default class MockedUserRepository implements IUserRepository {
 
 	async delete(id: UserId): Promise<void> {
 		const userIndex = this.users.findIndex(user => user.id.equals(id));
-		if (~userIndex) throw new AppRuntimeError("There is no user with such id!");
+		if (~userIndex) throw new AppRuntimeError("there is no user registered with such id");
 		else {
 			this.users.splice(userIndex, 1);
 			return;
@@ -30,7 +29,7 @@ export default class MockedUserRepository implements IUserRepository {
 	async findOneByEmail(email: string): Promise<User> {
 		const user = this.users.find(user => user.email == email);
 		if (user) return user;
-		else throw new EmptyQueryError("There is no user with such email!");
+		else throw new EmptyQueryError("there is no user registered with such email");
 	}
 
 	async findAll(): Promise<User[]> {
@@ -40,7 +39,7 @@ export default class MockedUserRepository implements IUserRepository {
 	async findOneById(id: UserId): Promise<User> {
 		const user = this.users.find(user => user.id.toString() == id.toString());
 		if (user) return user;
-		else throw new EmptyQueryError("There is no user with such id!");
+		else throw new EmptyQueryError("there is no user with such id");
 	}
 
 	private users = new Array<User>();

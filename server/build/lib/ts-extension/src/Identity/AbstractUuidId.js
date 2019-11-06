@@ -31,6 +31,9 @@ var AbstractUuidId = /** @class */ (function (_super) {
             _this = _super.call(this, UuidGenerator_1.default.generate()) || this;
         return _this;
     }
+    AbstractUuidId.prototype.equals = function (comparedObject) {
+        return this._id.equals(comparedObject._id);
+    };
     AbstractUuidId.prototype.toString = function () {
         return this._id.toString();
     };

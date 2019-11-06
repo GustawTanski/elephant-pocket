@@ -1,4 +1,4 @@
-import mongoose, { Model, Document } from "mongoose";
+import mongoose, { Model } from "mongoose";
 
 export async function mongoBeforeAll() {
 	const { MONGO_URL } = process.env;
@@ -7,7 +7,7 @@ export async function mongoBeforeAll() {
 			useNewUrlParser: true,
 			useUnifiedTopology: true
 		});
-	else throw Error("MONGO_URL wasn't provided!");
+	else throw Error("MONGO_URL wasn't provided");
 }
 export function mongoAfterAll(model?: Model<any, {}>) {
 	return async () => {

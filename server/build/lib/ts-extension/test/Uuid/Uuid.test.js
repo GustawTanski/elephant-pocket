@@ -15,4 +15,14 @@ describe("Uuid", function () {
         var notUuid = "notUuid";
         expect(function () { return new Uuid_1.default(notUuid); }).toThrowError();
     });
+    it("should compare in correct way", function () {
+        expect.assertions(2);
+        var sampleUuid1 = v4_1.default();
+        var sampleUuid2 = v4_1.default();
+        var uuid1 = new Uuid_1.default(sampleUuid1);
+        var uuid1Prim = new Uuid_1.default(sampleUuid1);
+        var uuid2 = new Uuid_1.default(sampleUuid2);
+        expect(uuid1.equals(uuid1Prim)).toBe(true);
+        expect(uuid1.equals(uuid2)).toBe(false);
+    });
 });

@@ -10,6 +10,9 @@ var Uuid = /** @class */ (function () {
             throw new Error("Wrong uuid string provided!");
         this.uuid = uuid;
     }
+    Uuid.prototype.equals = function (comparedObject) {
+        return this.uuid == comparedObject.uuid;
+    };
     Uuid.prototype.toString = function () {
         return this.uuid;
     };

@@ -34,11 +34,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var User_1 = require("./Model/User");
+var User_1 = __importDefault(require("../../Core/Component/User/Domain/User/User"));
+var User_2 = require("./Model/User");
+var EmptyQueryError_1 = __importDefault(require("../../Core/Port/Persistence/Error/EmptyQueryError"));
+var AppRuntimeError_1 = __importDefault(require("../../Core/SharedKernel/Error/AppRuntimeError"));
+// implements IPersistanceServicePort<User>
 var MongoDBUserPersistanceService = /** @class */ (function () {
     function MongoDBUserPersistanceService() {
-        this.UserModel = User_1.UserModel;
+        this.UserModel = User_2.UserModel;
     }
     MongoDBUserPersistanceService.prototype.add = function (user) {
         return __awaiter(this, void 0, void 0, function () {
@@ -46,7 +53,7 @@ var MongoDBUserPersistanceService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        persistedUser = new this.UserModel(User_1.UserMapper.toDocumentProperties(user));
+                        persistedUser = new this.UserModel(User_2.UserMapper.toDocumentProperties(user));
                         return [4 /*yield*/, persistedUser.save()];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -67,15 +74,88 @@ var MongoDBUserPersistanceService = /** @class */ (function () {
                         persistedUser = _a.sent();
                         return [3 /*break*/, 5];
                     case 3:
-                        persistedUser.overwrite(User_1.UserMapper.toDocumentProperties(user));
+                        persistedUser.overwrite(User_2.UserMapper.toDocumentProperties(user));
                         return [4 /*yield*/, persistedUser.save()];
                     case 4:
                         persistedUser = _a.sent();
                         _a.label = 5;
-                    case 5: return [2 /*return*/, User_1.UserMapper.toDomainObject(persistedUser)];
+                    case 5: return [2 /*return*/, User_2.UserMapper.toDomainObject(persistedUser)];
                 }
             });
         });
+    };
+    MongoDBUserPersistanceService.prototype.delete = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var deletedUser;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.UserModel.findByIdAndDelete(id.toString())];
+                    case 1:
+                        deletedUser = _a.sent();
+                        if (!deletedUser)
+                            throw new AppRuntimeError_1.default("There is no user witch such id!");
+                        else
+                            return [2 /*return*/, User_2.UserMapper.toDomainObject(deletedUser)];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MongoDBUserPersistanceService.prototype.findById = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var persistedUser;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.UserModel.findById(id.toString())];
+                    case 1:
+                        persistedUser = _a.sent();
+                        if (!persistedUser)
+                            throw this.notFoundError("id");
+                        else
+                            return [2 /*return*/, User_2.UserMapper.toDomainObject(persistedUser)];
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    MongoDBUserPersistanceService.prototype.findAll = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var persistedUsers;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.UserModel.find()];
+                    case 1:
+                        persistedUsers = _a.sent();
+                        return [2 /*return*/, persistedUsers.map(function (user) { return User_2.UserMapper.toDomainObject(user); })];
+                }
+            });
+        });
+    };
+    MongoDBUserPersistanceService.prototype.findByEmail = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            var persistedUser;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.UserModel.findOne({ email: email })];
+                    case 1:
+                        persistedUser = _a.sent();
+                        if (!persistedUser)
+                            throw this.notFoundError("email");
+                        return [2 /*return*/, User_2.UserMapper.toDomainObject(persistedUser)];
+                }
+            });
+        });
+    };
+    MongoDBUserPersistanceService.prototype.findOne = function (query) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                // TODO
+                return [2 /*return*/, new User_1.default({ email: "mocked.user@gmail.com", password: "pasWord123~" })];
+            });
+        });
+    };
+    MongoDBUserPersistanceService.prototype.notFoundError = function (parameter) {
+        return new EmptyQueryError_1.default("There is no user with such " + parameter + "!");
     };
     return MongoDBUserPersistanceService;
 }());
