@@ -8,10 +8,24 @@ interface State {
 	passwordValue: string;
 	chapter: string;
 	active: string;
+	isLoading: boolean;
 }
 
 export default class RegisterViewContent extends Component<{}, State> {
-	state = { emailValue: "", passwordValue: "", active: "e-mail", chapter: "e-mail" };
+	state = {
+		emailValue: "",
+		passwordValue: "",
+		active: "e-mail",
+		chapter: "e-mail",
+		isLoading: false
+	};
+
+	onSubmit = () => {
+		this.setState({ isLoading: true });
+		setTimeout(() => {
+			this.setState({ isLoading: false });
+		}, 3000);
+	};
 
 	inputs: Array<IInputInfo> = [
 		{
@@ -26,6 +40,12 @@ export default class RegisterViewContent extends Component<{}, State> {
 		}
 	];
 	render() {
-		return <BigForm inputs={this.inputs} onSubmitPointerUp={() => alert("submit")} />;
+		return (
+			<BigForm
+				inputs={this.inputs}
+				onSubmitPointerUp={this.onSubmit}
+				isLoading={this.state.isLoading}
+			/>
+		);
 	}
 }
