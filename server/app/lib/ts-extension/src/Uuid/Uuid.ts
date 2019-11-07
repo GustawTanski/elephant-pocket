@@ -1,7 +1,7 @@
 import validate from "uuid-validate";
-import ValueObject from "../ValueObject";
+import IValueObject from "../ValueObject";
 
-export default class Uuid implements ValueObject {
+export default class Uuid implements IValueObject {
 	private uuid: string;
 	constructor(uuid: string) {
 		if (!this.validate(uuid)) throw new Error("Wrong uuid string provided!");

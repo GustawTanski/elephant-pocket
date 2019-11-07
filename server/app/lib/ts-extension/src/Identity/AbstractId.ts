@@ -1,6 +1,6 @@
-import ValueObject from "../ValueObject";
+import IValueObject from "../ValueObject";
 
-export default abstract class AbstractId<T> implements ValueObject {
+export default abstract class AbstractId<T> implements IValueObject {
 	protected _id: T;
 
 	constructor(id: T) {

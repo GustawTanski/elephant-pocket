@@ -1,3 +1,3 @@
-export default interface ValueObject {
+export default interface IValueObject {
 	equals: (comparedObject: this) => boolean;
 }

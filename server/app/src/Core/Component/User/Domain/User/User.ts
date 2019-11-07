@@ -7,9 +7,9 @@ export interface IUserInput {
 	id?: UserId | string;
 }
 
-type IUser = IUserInput & { id: UserId };
+// type IUser = IUserInput & { id: UserId };
 
-export default class User implements IUser {
+export default class User {
 	get name() {
 		return this._name;
 	}
