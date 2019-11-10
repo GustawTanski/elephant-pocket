@@ -9,7 +9,11 @@ export default class OutcomeEvent extends BudgetEvent {
 	}
 
 	protected validatePayload(payload: IBudgetEventPayload) {
-		if (payload.balanceChange >= 0)
+		if (!this.isLowerThanZero(payload.balanceChange))
 			throw new AppLogicError("OutcomeEvent must have negative balance change");
+	}
+
+	private isLowerThanZero(value: number) {
+		return value < 0;
 	}
 }

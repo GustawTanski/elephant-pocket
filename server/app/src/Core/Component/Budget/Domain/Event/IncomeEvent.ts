@@ -9,7 +9,11 @@ export default class IncomeEvent extends BudgetEvent {
 	}
 
 	protected validatePayload(payload: IBudgetEventPayload) {
-		if (payload.balanceChange <= 0)
+		if (!this.isGreaterThanZero(payload.balanceChange))
 			throw new AppLogicError("IncomeEvent must have positive balance change");
+	}
+
+	private isGreaterThanZero(value: number) {
+		return value > 0;
 	}
 }

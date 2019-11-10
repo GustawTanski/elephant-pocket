@@ -87,7 +87,7 @@ describe("LoginRESTAPI", () => {
 			const email = "Tillman.Cartwright.DVM@gmail.com";
 			const password = "MickeyMouse52";
 			await userService.createUser({ email, password });
-			// await timer(1000);
+			await timer(1000);
 			const { id } = await userService.findOneByEmail(email);
 			const response = await request(app)
 				.post("/login")

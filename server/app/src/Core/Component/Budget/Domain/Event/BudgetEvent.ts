@@ -23,8 +23,7 @@ export default abstract class BudgetEvent {
 	get creationDate() {
 		return this._creationDate;
 	}
-	constructor(base: IBudgetEventInput) {
-		const { payload, name, creationDate } = base;
+	constructor({ payload, name, creationDate }: IBudgetEventInput) {
 		this.validatePayload(payload);
 		this._name = name;
 		this._payload = payload;
