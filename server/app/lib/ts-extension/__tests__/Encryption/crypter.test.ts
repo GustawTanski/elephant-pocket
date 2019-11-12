@@ -7,6 +7,13 @@ describe("crypter", () => {
 		await expect(crypter.compare(randomText, hash)).resolves.toBe(true);
 	});
 
+	describe(".encrypt", () => {
+		it("should not return same string as provided", async () => {
+			const text = "text";
+			await expect(crypter.encrypt(text)).resolves.not.toBe(text);
+		});
+	});
+
 	describe(".compare", () => {
 		it("should resolve to false when wrong password provided", async () => {
 			const password = "back-end";

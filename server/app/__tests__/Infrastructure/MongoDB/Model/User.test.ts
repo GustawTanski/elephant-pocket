@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import { UserModel, UserMapper } from "../../../../src/Infrastructure/MongoDB/Model/User";
 import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 import User from "../../../../src/Core/Component/User/Domain/User/User";
-import Uuid from "../../../../lib/ts-extension/src/Uuid/Uuid";
 
 describe("User mongoDB model", () => {
 	beforeAll(async () => {
@@ -30,13 +29,8 @@ describe("User mongoDB model", () => {
 		expect.assertions(2);
 		const userWithoutData = new UserModel();
 		const userWithWrongId = new UserModel({ ...validUserInput, _id: "not-uuid" });
-		// const userWithWrongPassword = new UserModel({
-		// 	...validUserInput,
-		// 	_id: UuidGenerator.generateAsString()
-		// });
 		await expect(userWithoutData.validate()).rejects.toBeTruthy();
 		await expect(userWithWrongId.validate()).rejects.toBeTruthy();
-		// await expect(userWithWrongPassword.validate()).rejects.toBeTruthy();
 	});
 	it("should save a user", () => {
 		expect.assertions(3);
