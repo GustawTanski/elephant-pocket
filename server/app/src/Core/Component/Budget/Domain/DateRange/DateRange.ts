@@ -48,7 +48,7 @@ export default class DateRange implements IValueObject {
 	private getTimeFromIndefiniteDate(date: Date | number) {
 		let time: number = 0;
 		if (date instanceof Date) time = date.getTime();
-		if (typeof date == "string") time = date;
+		if (typeof date == "number") time = date;
 		return time;
 	}
 
@@ -66,8 +66,8 @@ export default class DateRange implements IValueObject {
 	}
 
 	getTimeTillEnd(): number {
-		const now = new Date();
-		return this._end.getTime() - now.getTime();
+		const now = Date.now();
+		return this._end.getTime() - now;
 	}
 
 	isCurrent(): boolean {
@@ -84,7 +84,7 @@ export default class DateRange implements IValueObject {
 	}
 
 	static createNext(dateRange: DateRange): DateRange {
-		const begin = dateRange._begin;
+		const begin = dateRange._end;
 		const interval = dateRange.getTimeInterval();
 		const end = new Date(begin.getTime() + interval);
 		return new DateRange({ begin, end });
