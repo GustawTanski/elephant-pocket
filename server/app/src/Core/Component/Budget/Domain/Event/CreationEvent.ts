@@ -1,8 +1,8 @@
-import BudgetEvent, { IBudgetEventPayload, BudgetEventName } from "./BudgetEvent";
+import BudgetEventImp, { IBudgetEventPayload, BudgetEventName } from "./BudgetEvent";
 
-const BUDGET_CREATION: BudgetEventName = "BUDGET_CREATION";
+export const BUDGET_CREATION: BudgetEventName = "BUDGET_CREATION";
 
-export default class CreationEvent extends BudgetEvent {
+export default class CreationEvent extends BudgetEventImp {
 	constructor(creationDate?: Date) {
 		const payload: IBudgetEventPayload = {
 			balanceChange: 0

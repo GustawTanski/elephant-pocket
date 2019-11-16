@@ -26,9 +26,7 @@ export default class DateRange implements IValueObject {
 	constructor({ begin, end }: DateRangeInput) {
 		({ begin, end } = this.handleArgumentsType(begin, end));
 		this._begin = begin;
-		Object.seal(this._begin);
 		this._end = end;
-		Object.seal(this._end);
 	}
 
 	private handleArgumentsType(begin: Date | number, end: Date | number): FinalDateRangeInput {
@@ -65,22 +63,38 @@ export default class DateRange implements IValueObject {
 		return this._end.getTime() - this._begin.getTime();
 	}
 
+	// in milliseconds
 	getTimeTillEnd(): number {
 		const now = Date.now();
 		return this._end.getTime() - now;
 	}
 
 	isCurrent(): boolean {
-		const now = new Date();
-		const isAfter: boolean = now.getTime() > this._begin.getTime();
-		const isBefore: boolean = now.getTime() < this._end.getTime();
-		return isAfter && isBefore;
+		return this.isAfterBegin() && this.isBeforeEnd();
+	}
+	private isAfterBegin(): boolean {
+		return Date.now() > this._begin.getTime();
+	}
+
+	private isBeforeEnd(): boolean {
+		return Date.now() < this._end.getTime();
 	}
 
 	equals(comparedObject: DateRange): boolean {
-		const areBeginsEqual: boolean = this._begin.getTime() == comparedObject._begin.getTime();
-		const areEndsEqual: boolean = this._end.getTime() == comparedObject._end.getTime();
+		const areBeginsEqual: boolean = this.isEqualToBegin(comparedObject._begin);
+		const areEndsEqual: boolean = this.isEqualToEnd(comparedObject._end);
 		return areBeginsEqual && areEndsEqual;
+	}
+
+	private isEqualToBegin(comparedDate: Date): boolean {
+		return this.areDatesEqual(this._begin, comparedDate);
+	}
+	private isEqualToEnd(comparedDate: Date): boolean {
+		return this.areDatesEqual(this._end, comparedDate);
+	}
+
+	private areDatesEqual(firstDate: Date, secondDate: Date): boolean {
+		return firstDate.getTime() == secondDate.getTime();
 	}
 
 	static createNext(dateRange: DateRange): DateRange {

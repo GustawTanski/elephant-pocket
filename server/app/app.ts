@@ -10,7 +10,12 @@ import UserService from "./src/Core/Component/User/Aplication/Service/UserServic
 import UserRepository from "./src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
 import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/MongoDBUserPersistenceService";
 import crypter from "./lib/ts-extension/src/Encryption/crypter";
-import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/LoginRESTAPI";
+import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
+import DailyLimitBudget from "./src/Core/Component/Budget/Domain/Budget/DailyLimitBudget";
+import DateRange from "./src/Core/Component/Budget/Domain/DateRange/DateRange";
+import IncomeEvent from "./src/Core/Component/Budget/Domain/Event/IncomeEvent";
+import MongoDBBudgetPersistenceService from "./src/Infrastructure/MongoDB/MongoDBBudgetPersistenceService";
+import UserId from "./src/Core/SharedKernel/Component/User/Domain/User/UserId";
 
 if (dotenvConfigResult.error) throw dotenvConfigResult.error;
 
@@ -37,10 +42,24 @@ app.listen(PORT, function appStarted() {
 	console.log(`Listening on ${PORT} port...`);
 });
 
+const budget = new DailyLimitBudget({
+	minimalBalance: 0,
+	dateRange: new DateRange({ begin: Date.now(), end: Date.now() + 10 ** 6 }),
+	ownerId: new UserId()
+});
+budget.pushEvent(
+	new IncomeEvent({
+		balanceChange: 100
+	})
+);
+console.log(budget);
+const budgetService = new MongoDBBudgetPersistenceService();
+budgetService.save(budget);
+
 if (MONGODB_URI) {
 	mongoose.connect(
 		MONGODB_URI,
-		{ useNewUrlParser: true, useUnifiedTopology: true, autoIndex: false },
+		{ useNewUrlParser: true, useUnifiedTopology: true },
 		(err: MongoError) => {
 			if (err) console.error(err);
 			else console.log("Connected to database...");

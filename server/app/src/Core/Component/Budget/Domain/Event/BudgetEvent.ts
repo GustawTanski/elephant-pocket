@@ -10,24 +10,23 @@ interface IBudgetEventInput {
 
 export type BudgetEventName = string;
 
-export default abstract class BudgetEvent {
-	protected _name: string;
-	protected _payload: IBudgetEventPayload;
-	protected _creationDate: Date;
-	get name() {
-		return this._name;
-	}
-	get payload() {
-		return {...this._payload};
-	}
-	get creationDate() {
-		return new Date(this._creationDate);
-	}
+export interface BudgetEvent {
+	name: BudgetEventName;
+	payload: IBudgetEventPayload;
+	creationDate: Date;
+}
+
+export default abstract class BudgetEventImp implements BudgetEvent {
+	name: BudgetEventName;
+	payload: IBudgetEventPayload;
+	creationDate: Date;
+
 	constructor({ payload, name, creationDate }: IBudgetEventInput) {
 		this.validatePayload(payload);
-		this._name = name;
-		this._payload = payload;
-		this._creationDate = creationDate || new Date();
+		this.name = name;
+		this.payload = { ...payload };
+		creationDate = creationDate || new Date();
+		this.creationDate = new Date(creationDate);
 	}
 
 	protected abstract validatePayload(payload: IBudgetEventPayload): void;

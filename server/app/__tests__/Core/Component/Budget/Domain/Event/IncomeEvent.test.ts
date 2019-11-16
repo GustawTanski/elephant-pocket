@@ -1,21 +1,61 @@
 import IncomeEvent from "../../../../../../src/Core/Component/Budget/Domain/Event/IncomeEvent";
 import AppLogicError from "../../../../../../src/Core/SharedKernel/Error/AppLogicError";
 
+let balanceChange: number;
+let incomeEvent: IncomeEvent;
+let creationDate: Date;
+
 describe("IncomeEvent", () => {
-	it("should throw AppLogicError when provided balanceChange is less or equal to 0", () => {
-		expect(() => new IncomeEvent({ balanceChange: -10 })).toThrow(AppLogicError);
-		expect(() => new IncomeEvent({ balanceChange: 0 })).toThrow(AppLogicError);
+	it("should throw AppLogicError when provided balanceChange is less than 0", () => {
+		givenNegativeBalanceChange();
+		thenIncomeEventConstructorThrows();
 	});
 
+	it("should throw AppLogicError when provided balanceChange is equal to 0", () => {
+		givenZeroBalanceChange();
+		thenIncomeEventConstructorThrows();
+	});
+
+	function givenNegativeBalanceChange() {
+		balanceChange = -10;
+	}
+	function givenZeroBalanceChange() {
+		balanceChange = 0;
+	}
+	function thenIncomeEventConstructorThrows() {
+		expect(() => new IncomeEvent({ balanceChange })).toThrow(AppLogicError);
+	}
 	it("should set creationDate as current time when none is provided", () => {
-		const incomeEvent = new IncomeEvent({ balanceChange: 10 });
-		const now = new Date();
-		expect(incomeEvent.creationDate.getTime()).toBe(now.getTime());
+		givenPositiveBalanceChange();
+		whenConstructingWithoutCreationDate();
+		thenCreationDateIsNow();
 	});
 
-	it("should preserve provided creationDate", () => {
-		const creationDate = new Date(Date.now() + 10 * 10);
-		const incomeEvent = new IncomeEvent({ balanceChange: 100 }, creationDate);
-		expect(incomeEvent.creationDate.getTime()).toEqual(creationDate.getTime());
+	function givenPositiveBalanceChange() {
+		balanceChange = 10;
+	}
+	function whenConstructingWithoutCreationDate() {
+		incomeEvent = new IncomeEvent({ balanceChange });
+		creationDate = new Date();
+	}
+	function thenCreationDateIsNow() {
+		expect(incomeEvent.creationDate.getTime()).toBe(creationDate.getTime());
+	}
+	it("should copy provided creationDate", () => {
+		givenPositiveBalanceChangeAndDate();
+		whenConstructingWithCreationDate();
+		thenCreationDateIsCopied();
 	});
+
+	function givenPositiveBalanceChangeAndDate() {
+		givenPositiveBalanceChange();
+		creationDate = new Date(Date.now() - 10 ** 10);
+	}
+	function whenConstructingWithCreationDate() {
+		incomeEvent = new IncomeEvent({ balanceChange }, creationDate);
+	}
+	function thenCreationDateIsCopied() {
+		expect(incomeEvent.creationDate.getTime()).toBe(creationDate.getTime());
+		expect(incomeEvent.creationDate).not.toBe(creationDate);
+	}
 });

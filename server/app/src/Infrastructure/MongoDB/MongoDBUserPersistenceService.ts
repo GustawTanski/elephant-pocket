@@ -5,9 +5,9 @@ import UserId from "../../Core/SharedKernel/Component/User/Domain/User/UserId";
 import IQuery from "../../Core/Port/Persistence/QueryPortInterface";
 import EmptyQueryError from "../../Core/Port/Persistence/Error/EmptyQueryError";
 import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
-// implements IPersistanceServicePort<User>
+
 export default class MongoDBUserPersistanceService implements IPersistanceService<User> {
-	UserModel = UserModel;
+	private UserModel = UserModel;
 
 	constructor() {}
 

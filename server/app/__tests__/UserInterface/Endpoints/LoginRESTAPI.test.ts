@@ -8,7 +8,7 @@ import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/M
 import crypter from "../../../lib/ts-extension/src/Encryption/crypter";
 import { mongoBeforeAll, mongoAfterAll } from "../../Infrastructure/MongoDB/mongoDBTestHelper";
 import { UserModel } from "../../../src/Infrastructure/MongoDB/Model/User";
-import LoginRESTAPI from "../../../src/UserInterface/REST/Endpoints/LoginRESTAPI";
+import LoginRESTAPI from "../../../src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
 import jwt from "../../../src/UserInterface/REST/JWT/jwt";
 
 const mongoDBUserPersistanceService = new MongoDBUserPersistanceService();

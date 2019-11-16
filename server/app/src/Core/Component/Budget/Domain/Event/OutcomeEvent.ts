@@ -1,9 +1,9 @@
-import BudgetEvent, { IBudgetEventPayload, BudgetEventName } from "./BudgetEvent";
+import BudgetEventImp, { IBudgetEventPayload, BudgetEventName } from "./BudgetEvent";
 import AppLogicError from "../../../../SharedKernel/Error/AppLogicError";
 
 export const BUDGET_OUTCOME: BudgetEventName = "BUDGET_OUTCOME";
 
-export default class OutcomeEvent extends BudgetEvent {
+export default class OutcomeEvent extends BudgetEventImp {
 	constructor(payload: IBudgetEventPayload, creationDate?: Date) {
 		super({ name: BUDGET_OUTCOME, payload, creationDate });
 	}
