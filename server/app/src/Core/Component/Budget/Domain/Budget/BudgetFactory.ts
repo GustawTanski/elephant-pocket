@@ -1,8 +1,8 @@
 import InvalidBudgetTypeError from "../../../../SharedKernel/Component/Budget/Domain/Error/InvalidBudgetTypeError";
 import DailyLimitBudget, { DAILY_LIMIT } from "./DailyLimitBudget";
-import Budget, { IBudgetInput } from "./Budget";
+import Budget, { BudgetInput } from "./Budget";
 
-interface BudgetFactoryInput extends IBudgetInput {
+interface BudgetFactoryInput extends BudgetInput {
 	type: string;
 }
 

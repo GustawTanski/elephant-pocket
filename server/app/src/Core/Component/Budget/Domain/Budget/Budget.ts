@@ -7,15 +7,15 @@ import OutcomeEvent from "../Event/OutcomeEvent";
 import IncomeEvent from "../Event/IncomeEvent";
 import UserId from "../../../../SharedKernel/Component/User/Domain/User/UserId";
 
-export interface IBudgetInput {
-	id?: BudgetId | string;
-	ownerId: UserId | string;
+export interface BudgetInput {
+	id?: BudgetId;
+	ownerId: UserId;
 	history?: BudgetEventImp[];
 	dateRange: DateRange;
 	minimalBalance: number;
 }
 
-interface FinalBudgetInput extends IBudgetInput {
+interface FinalBudgetInput extends BudgetInput {
 	id: BudgetId;
 	ownerId: UserId;
 	history: BudgetEventImp[];
@@ -49,35 +49,28 @@ export default abstract class Budget {
 		return [...this._history];
 	}
 
-	constructor(base: IBudgetInput) {
+	constructor(base: BudgetInput) {
 		const { id, history, dateRange, minimalBalance, ownerId } = this.handleArgumentsType(base);
 		this.validateHistory(history);
 		this._history = history;
 		this._dateRange = dateRange;
-		this._id = id;
+		this._id = id
 		this._ownerId = ownerId;
 		this._minimalBalance = minimalBalance;
 	}
 
-	private handleArgumentsType(base: IBudgetInput): FinalBudgetInput {
+	private handleArgumentsType(base: BudgetInput): FinalBudgetInput {
 		const id = this.handleIdType(base.id);
-		const ownerId = this.handleOwnerIdType(base.ownerId);
 		const history = this.handleHistoryType(base.history);
-		return { ...base, ownerId, id, history };
+		return { ...base, id, history };
 	}
 
-	private handleIdType(id?: BudgetId | string): BudgetId {
-		if (id instanceof BudgetId) return new BudgetId(id.toString());
-		else return new BudgetId(id);
-	}
-
-	private handleOwnerIdType(id?: UserId | string) {
-		if (id instanceof UserId) return new UserId(id.toString());
-		else return new UserId(id);
+	private handleIdType(id?: BudgetId): BudgetId {
+		return id || new BudgetId(id);
 	}
 
 	private handleHistoryType(history?: BudgetEventImp[]): BudgetEventImp[] {
-		return history || [new CreationEvent()];
+		return history != void 0 ? [...history] : [new CreationEvent()];
 	}
 
 	private validateHistory(history: BudgetEventImp[]): void {
