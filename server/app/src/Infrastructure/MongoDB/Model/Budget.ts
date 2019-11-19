@@ -1,10 +1,10 @@
 import { Document, Schema, model } from "mongoose";
-import { BudgetEvent } from "../../../Core/Component/Budget/Domain/Event/BudgetEvent";
 import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 import Budget from "../../../Core/Component/Budget/Domain/Budget/Budget";
-import DateRange from "../../../Core/Component/Budget/Domain/DateRange/DateRange";
+import DateRange from "../../../../lib/ts-extension/src/DateRange/DateRange";
 import BudgetFactory from "../../../Core/Component/Budget/Domain/Budget/BudgetFactory";
 import BudgetEventFactory from "../../../Core/Component/Budget/Domain/Event/BudgetEventFactory";
+import { BudgetEvent } from "../../../Core/Component/Budget/Domain/Event/BudgetEvent";
 
 export interface BudgetDocument extends Document {
 	_id: string;

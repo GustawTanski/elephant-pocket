@@ -12,7 +12,7 @@ import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/MongoDBU
 import crypter from "./lib/ts-extension/src/Encryption/crypter";
 import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
 import DailyLimitBudget from "./src/Core/Component/Budget/Domain/Budget/DailyLimitBudget";
-import DateRange from "./src/Core/Component/Budget/Domain/DateRange/DateRange";
+import DateRange from "./lib/ts-extension/src/DateRange/DateRange";
 import IncomeEvent from "./src/Core/Component/Budget/Domain/Event/IncomeEvent";
 import MongoDBBudgetPersistenceService from "./src/Infrastructure/MongoDB/MongoDBBudgetPersistenceService";
 import UserId from "./src/Core/SharedKernel/Component/User/Domain/User/UserId";

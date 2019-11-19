@@ -1,5 +1,5 @@
-import DateRange from "../../../../../../src/Core/Component/Budget/Domain/DateRange/DateRange";
-import InvalidArgumentError from "../../../../../../src/Core/SharedKernel/Error/InvalidArgumentError";
+import DateRange from "../../src/DateRange/DateRange";
+import InvalidArgumentError from "../../../../src/Core/SharedKernel/Error/InvalidArgumentError";
 
 let begin: Date;
 let end: Date;

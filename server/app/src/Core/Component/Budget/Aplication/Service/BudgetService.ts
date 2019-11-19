@@ -1,5 +1,5 @@
 import BudgetRepository from "../Repository/BudgetRepositoryInterface";
-import DateRange from "../../Domain/DateRange/DateRange";
+import DateRange from "../../../../../../lib/ts-extension/src/DateRange/DateRange";
 import Budget from "../../Domain/Budget/Budget";
 import BudgetFactory from "../../Domain/Budget/BudgetFactory";
 import NewBudgetDTO from "../DTO/NewBudgetDTO";

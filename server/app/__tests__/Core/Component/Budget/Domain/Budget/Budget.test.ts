@@ -1,111 +1,111 @@
-import Budget, { BudgetInput } from "../../../../../../src/Core/Component/Budget/Domain/Budget/Budget";
-import BudgetEventImp from "../../../../../../src/Core/Component/Budget/Domain/Event/BudgetEvent";
+import Budget, {
+	BudgetInput
+} from "../../../../../../src/Core/Component/Budget/Domain/Budget/Budget";
+import AbstractBudgetEvent from "../../../../../../src/Core/Component/Budget/Domain/Event/AbstractBudgetEvent";
 import UserId from "../../../../../../src/Core/SharedKernel/Component/User/Domain/User/UserId";
 import BudgetId from "../../../../../../src/Core/SharedKernel/Component/Budget/Domain/Budget/BudgetId";
-import CreationEvent from "../../../../../../src/Core/Component/Budget/Domain/Event/CreationEvent";
-import DateRange from "../../../../../../src/Core/Component/Budget/Domain/DateRange/DateRange";
+import DateRange from "../../../../../../lib/ts-extension/src/DateRange/DateRange";
 import UuidGenerator from "../../../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 import IncomeEvent from "../../../../../../src/Core/Component/Budget/Domain/Event/IncomeEvent";
-import InvalidArgumentError from "../../../../../../src/Core/SharedKernel/Error/InvalidArgumentError";
+import { BudgetEvent } from "../../../../../../src/Core/Component/Budget/Domain/Event/BudgetEvent";
 
 class TestBudget extends Budget {
-    type = "TEST"
+	type = "TEST";
 }
 
 let budgetInput: BudgetInput;
-let history: BudgetEventImp[];
+let history: AbstractBudgetEvent[];
 let minimalBalance: number;
 let ownerId: UserId;
 let dateRange: DateRange;
 let id: BudgetId;
 let budget: Budget;
+let event: BudgetEvent;
 
+describe("Budget", () => {
+	function givenValidBudgetInput() {
+		history = [new IncomeEvent({ balanceChange: 100 })];
+		minimalBalance = 0;
+		ownerId = new UserId();
+		dateRange = DateRange.createFromInterval(new Date(), 10 ** 4);
+		id = new BudgetId();
+		budgetInput = {
+			history,
+			ownerId,
+			minimalBalance,
+			dateRange,
+			id
+		};
+	}
 
-describe('Budget', () => {
-    function givenValidBudgetInput() {
-        history = [new CreationEvent()];
-        minimalBalance = 0;
-        ownerId = new UserId();
-        dateRange = DateRange.createFromInterval(new Date(), 10**4);
-        id = new BudgetId();
-        budgetInput = {
-            history,
-            ownerId,
-            minimalBalance,
-            dateRange,
-            id
-        }
-    }
+	it("constructor should create new valid BudgetId if none is provided", () => {
+		givenBudgetInputWithoutId();
+		whenConstructingBudget();
+		thenBudgetHasNewValidId();
+	});
 
+	function givenBudgetInputWithoutId() {
+		givenValidBudgetInput();
+		delete budgetInput.id;
+	}
 
-    it("constructor should create new valid BudgetId if none is provided", () => {
-        givenBudgetInputWithoutId();
-        whenConstructingBudget();
-        thenBudgetHasNewValidId();
-    })
+	function whenConstructingBudget() {
+		budget = new TestBudget(budgetInput);
+	}
 
-    function givenBudgetInputWithoutId() {
-        givenValidBudgetInput();
-        delete budgetInput.id;
-    }
+	function thenBudgetHasNewValidId() {
+		expect(UuidGenerator.validate(budget.id.toString())).toBe(true);
+	}
 
-    function whenConstructingBudget() {
-        budget = new TestBudget(budgetInput);
-    }
+	it("constructor should create new empty history is provided", () => {
+		givenBudgetInputWithoutHistory();
+		whenConstructingBudget();
+		thenBudgetHasEmptyHistory();
+	});
 
-    function thenBudgetHasNewValidId() {
-        expect(UuidGenerator.validate(budget.id.toString())).toBe(true);
-    }
+	function givenBudgetInputWithoutHistory() {
+		givenValidBudgetInput();
+		delete budgetInput.history;
+	}
 
-    it("constructor should create new history with CreationEvent as 0 element when none is provided", () => {
-        givenBudgetInputWithoutHistory();
-        whenConstructingBudget();
-        thenBudgetHasHistoryWithCreationEventAtStart();
-    })
+	function thenBudgetHasEmptyHistory() {
+		expect(budget.history.length).toBe(0);
+	}
 
-    function givenBudgetInputWithoutHistory() {
-        givenValidBudgetInput();
-        delete budgetInput.history;
-    }
+	it("constructor should copy provided history", () => {
+		givenValidBudgetInput();
+		whenConstructingBudget();
+		thenBudgetHasCopiedHistory();
+	});
 
-    function thenBudgetHasHistoryWithCreationEventAtStart() {
-        expect(budget.history.length).not.toBe(0);
-        expect(budget.history[0]).toBeInstanceOf(CreationEvent);
-    }
+	function thenBudgetHasCopiedHistory() {
+		expect(budget["_history"]).not.toBe(history);
+		expect(budget["_history"]).toEqual(history);
+	}
 
-    it("constructor should throw InvalidArgumentError when provided history 0 element is not a CreationEvent", () => {
-        givenBudgetInputWithInvalidFirstEventInHistory();
-        thenConstructorThrows(InvalidArgumentError);
-    })
+	it("#pushEvent should add instance of BudgetEvent at the end of history", () => {
+		givenBudgetAndIncomeEvent();
+		whenPushingTheseEvent();
+		thenThisEventIsAtTheEndOfHistory();
+	});
 
-    function givenBudgetInputWithInvalidFirstEventInHistory() {
-        givenValidBudgetInput();
-        budgetInput.history = [ new IncomeEvent({ balanceChange: 1})];
-    }
+	function givenBudget() {
+		givenValidBudgetInput();
+		budget = new TestBudget(budgetInput);
+	}
 
-    function thenConstructorThrows(error: any) {
-        expect(() => new TestBudget(budgetInput)).toThrow(error);
-    }
+	function givenBudgetAndIncomeEvent() {
+		givenBudget();
+		event = new IncomeEvent({ balanceChange: 1 });
+	}
 
-    it("constructor should throw InvalidArgumentError when provided history is empty", () => {
-        givenBudgetInputWithEmptyHistory();
-        thenConstructorThrows(InvalidArgumentError);
-    })
+	function whenPushingTheseEvent() {
+		budget.pushEvent(event);
+	}
 
-    function givenBudgetInputWithEmptyHistory() {
-        givenValidBudgetInput();
-        budgetInput.history = new Array<BudgetEventImp>();
-    }
-
-    it("constructor should copy provided history", () => {
-        givenValidBudgetInput();
-        whenConstructingBudget();
-        thenBudgetHasCopiedHistory();
-    })
-
-    function thenBudgetHasCopiedHistory() {
-        expect(budget["_history"]).not.toBe(history);
-        expect(budget["_history"]).toEqual(history);
-    }
-
-})
+	function thenThisEventIsAtTheEndOfHistory() {
+		const { length } = budget.history;
+		const lastEvent: BudgetEvent = budget.history[length - 1];
+		expect(lastEvent).toBe(event);
+	}
+});

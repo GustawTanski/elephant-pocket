@@ -1,5 +1,5 @@
-import IValueObject from "../../../../../../lib/ts-extension/src/ValueObject";
-import InvalidArgumentError from "../../../../SharedKernel/Error/InvalidArgumentError";
+import IValueObject from "../ValueObject";
+import InvalidArgumentError from "../../../../src/Core/SharedKernel/Error/InvalidArgumentError";
 
 interface FinalDateRangeInput {
 	begin: Date;
