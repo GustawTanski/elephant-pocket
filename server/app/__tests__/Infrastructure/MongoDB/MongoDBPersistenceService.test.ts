@@ -1,14 +1,14 @@
-import MongoDBPersistenceService, {
-	DomainObject
-} from "../../../src/Infrastructure/MongoDB/MongoDBPersistenceService";
+import MongoDBPersistenceService from "../../../src/Infrastructure/MongoDB/MongoDBPersistenceService";
 import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import AppRuntimeError from "../../../src/Core/SharedKernel/Error/AppRuntimeError";
+import DomainObject from "../../../src/Core/Port/DomainObject";
 
 class TestId extends AbstractUuidId {}
 const testModule = {
 	create: jest.fn(),
 	isExisting: jest.fn(),
 	overwrite: jest.fn(),
+	delete: jest.fn(),
 	get name() {
 		return "object";
 	}
@@ -16,21 +16,20 @@ const testModule = {
 const persistenceService = new MongoDBPersistenceService<DomainObject>(testModule);
 
 let domainObject: DomainObject;
-let spy: jasmine.Spy;
 let id: TestId;
 describe("MongoDBPersistenceService", () => {
+	beforeEach(() => {
+		testModule.create.mockReset();
+		testModule.isExisting.mockReset();
+		testModule.overwrite.mockReset();
+	});
 	it("#save should call .mongooseModule.isExisting with id from provided domain object", () => {
-		givenDomainObjectAndSpyOnIsExisting();
+		givenDomainObjectAndId();
 		whenSaving();
-		thenSpyHaveBeenCalledWithProvidedId();
+		thenIsExistingHaveBennCallWithProvidedId();
 	});
 
-	function givenDomainObjectAndSpyOnIsExisting() {
-		givenDomainObject();
-		spy = spyOn(persistenceService["mongooseModule"], "isExisting");
-	}
-
-	function givenDomainObject() {
+	function givenDomainObjectAndId() {
 		id = new TestId();
 		domainObject = {
 			id
@@ -41,58 +40,54 @@ describe("MongoDBPersistenceService", () => {
 		persistenceService.save(domainObject);
 	}
 
-	function thenSpyHaveBeenCalledWithProvidedId() {
-		expect(spy).toHaveBeenCalledWith(id);
+	function thenIsExistingHaveBennCallWithProvidedId() {
+		expect(testModule.isExisting).toHaveBeenCalledWith(id);
 	}
 
-	it("#save should call .mongooseModule.create with provided domain object when there is no with same id", () => {
-		givenDomainObjectAndSpyOnSave();
-		whenFindByIdReturnsFalseWhileSaving();
-		thenSpyHaveBeenCalledWithDomainObject();
-	});
-	function givenDomainObjectAndSpyOnSave() {
+	it("#save should call .mongooseModule.create with provided domain object when there is no with same id", async () => {
 		givenDomainObject();
-		spy = spyOn(persistenceService["mongooseModule"], "create");
-	}
-
-	function whenFindByIdReturnsFalseWhileSaving() {
-		testModule.isExisting.mockReturnValueOnce(false);
-		persistenceService.save(domainObject);
-	}
-
-	function thenSpyHaveBeenCalledWithDomainObject() {
-		expect(spy).toHaveBeenCalledWith(domainObject);
-	}
-
-	it("#save should not call .mongooseModule.save when there is object with provided id", () => {
-		givenDomainObjectAndSpyOnSave();
-		whenIsExistingReturnsTrueWhileSaving();
-		thenSpyHaveNotBeenCalled();
+		await whenFindByIdResolveToBeFalseWhileSaving();
+		thenCreateHaveBeenCalledWithDomainObject();
 	});
 
-	function whenIsExistingReturnsTrueWhileSaving() {
-		testModule.isExisting.mockReturnValueOnce(true);
-		persistenceService.save(domainObject);
+	function givenDomainObject() {
+		domainObject = {
+			id: new TestId()
+		};
 	}
 
-	function thenSpyHaveNotBeenCalled() {
-		expect(spy).not.toBeCalled();
+	async function whenFindByIdResolveToBeFalseWhileSaving() {
+		testModule.isExisting.mockResolvedValueOnce(false);
+		await persistenceService.save(domainObject);
 	}
 
-	it("#save should call .mongooseModule.overwrite with provided domain object when there is one with provided id", () => {
-		givenDomainObjectAndSpyOnOverwrite();
-		whenIsExistingReturnsTrueWhileSaving();
-		thenSpyHaveBeenCalledWithDomainObject();
-	});
+	function thenCreateHaveBeenCalledWithDomainObject() {
+		expect(testModule.create).toHaveBeenCalledWith(domainObject);
+	}
 
-	function givenDomainObjectAndSpyOnOverwrite() {
+	it("#save should not call .mongooseModule.create when there is object with provided id", async () => {
 		givenDomainObject();
-		spy = spyOn(persistenceService["mongooseModule"], "overwrite");
+		await whenIsExistingRetusolveToTrueWhileSaving();
+		thenCreateHaveNotBeenCalled();
+		thenOverwriteHaveBeenCalledWithDomainObject();
+	});
+
+	async function whenIsExistingRetusolveToTrueWhileSaving() {
+		testModule.isExisting.mockResolvedValueOnce(true);
+		await persistenceService.save(domainObject);
 	}
 
-	it("#delete should .mongooseModule.findById with provided id", () => {
+	function thenCreateHaveNotBeenCalled() {
+		expect(testModule.create).not.toHaveBeenCalled();
+	}
+
+	function thenOverwriteHaveBeenCalledWithDomainObject() {
+		expect(testModule.overwrite).toHaveBeenCalledWith(domainObject);
+	}
+
+	it("#delete should call .mongooseModule.findById with provided id", async () => {
 		givenId();
-		whenIsExistingReturnsTrueWhileDeleting();
+		await whenIsExistingResolveToTrueWhileDeleting();
 		thenIsExistingHaveBennCallWithProvidedId();
 	});
 
@@ -100,28 +95,38 @@ describe("MongoDBPersistenceService", () => {
 		id = new TestId();
 	}
 
-	function whenIsExistingReturnsTrueWhileDeleting() {
-		testModule.isExisting.mockReturnValueOnce(true);
-		persistenceService.delete(id);
+	async function whenIsExistingResolveToTrueWhileDeleting() {
+		testModule.isExisting.mockResolvedValueOnce(true);
+		await persistenceService.delete(id);
 	}
 
-	function thenIsExistingHaveBennCallWithProvidedId() {
-		expect(testModule.isExisting).toHaveBeenCalledWith(id);
-	}
-
-	it("#delete should throw AppRuntimeError when .mongooseModule.findById returns null", () => {
+	it("#delete should throw AppRuntimeError when .mongooseModule.findById returns false", async () => {
 		givenId();
-		whenFindByIdReturnsFalse();
-		thenDeleteThrows(AppRuntimeError);
+		whenFindByIdResolveToFalse();
+		await thenDeleteRejectsToInstanceOf(AppRuntimeError);
 	});
 
-	function whenFindByIdReturnsFalse() {
-		testModule.isExisting.mockReturnValueOnce(false);
+	function whenFindByIdResolveToFalse() {
+		testModule.isExisting.mockResolvedValueOnce(false);
 	}
 
-	function thenDeleteThrows(error: any) {
-		expect(() => persistenceService.delete(id)).toThrow(error);
+	async function thenDeleteRejectsToInstanceOf(error: any) {
+		expect.assertions(1);
+		await expect(persistenceService.delete(id)).rejects.toBeInstanceOf(error);
 	}
 
-	// it("#delete should call .mongooseModule.delete when .mongooseModule.findById return");
+	it("#delete should call .mongooseModule.delete when .mongooseModule.findById returns true", async () => {
+		givenId();
+		await whenFindByIdResolveToTrueWhileDeleting();
+		thenMongooseDeleteHaveBeenCalledWithProvidedId();
+	});
+
+	async function whenFindByIdResolveToTrueWhileDeleting() {
+		testModule.isExisting.mockResolvedValueOnce(true);
+		await persistenceService.delete(id);
+	}
+
+	function thenMongooseDeleteHaveBeenCalledWithProvidedId() {
+		expect(testModule.delete).toHaveBeenCalledWith(id);
+	}
 });

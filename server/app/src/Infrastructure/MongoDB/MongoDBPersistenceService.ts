@@ -1,18 +1,6 @@
-import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
-import { Document } from "mongoose";
 import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
-
-export interface DomainObject {
-	id: AbstractUuidId;
-	[propName: string]: any;
-}
-
-export interface MongooseModule<T extends DomainObject> {
-	create: (domainObject: T) => void;
-	overwrite: (domainObject: T) => void;
-	isExisting: (id: T["id"]) => boolean;
-	readonly name: string;
-}
+import DomainObject from "../../Core/Port/DomainObject";
+import { MongooseModule } from "./MongooseModule";
 
 export default class MongoDBPersistenceService<T extends DomainObject> {
 	private mongooseModule: MongooseModule<T>;
@@ -21,14 +9,15 @@ export default class MongoDBPersistenceService<T extends DomainObject> {
 		this.mongooseModule = mongooseModule;
 	}
 
-	save(domainObject: T) {
-		const isObjectExisting = this.mongooseModule.isExisting(domainObject.id);
+	async save(domainObject: T): Promise<void> {
+		const isObjectExisting: boolean = await this.mongooseModule.isExisting(domainObject.id);
 		if (!isObjectExisting) this.mongooseModule.create(domainObject);
 		else this.mongooseModule.overwrite(domainObject);
 	}
 
-	delete(id: T["id"]) {
-		if (!this.mongooseModule.isExisting(id))
+	async delete(id: T["id"]): Promise<void> {
+		if (!(await this.mongooseModule.isExisting(id)))
 			throw new AppRuntimeError(`there is no ${this.mongooseModule.name} with provided id`);
+		this.mongooseModule.delete(id);
 	}
 }

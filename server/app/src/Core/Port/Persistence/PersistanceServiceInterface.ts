@@ -1,7 +1,7 @@
-import IObjectWithId from "../ObjectWithId";
+import DomainObject from "../DomainObject";
 import IQuery from "./QueryPortInterface";
 
-export default interface IPersistanceService<T extends IObjectWithId> {
+export default interface IPersistanceService<T extends DomainObject> {
 	save: (entity: T) => Promise<T>;
 	delete: (entityId: T["id"]) => Promise<T>;
 	findAll: () => Promise<T[]>;
