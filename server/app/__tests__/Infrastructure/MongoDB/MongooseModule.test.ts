@@ -3,6 +3,7 @@ import DomainObject from "../../../src/Core/Port/DomainObject";
 import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import { Document } from "mongoose";
 import { MongooseModel } from "../../../src/Infrastructure/MongoDB/Model/AbstractMongooseModel";
+import AppRuntimeError from "../../../src/Core/SharedKernel/Error/AppRuntimeError";
 
 type T = DomainObject;
 type S = Document;
@@ -63,11 +64,11 @@ describe("AbstractMongooseModule", () => {
 
 	it("#overwrite should call model.toDocumentProperties", async () => {
 		givenDomainObject();
-		await whenOverwriting();
+		await whenOverwritingExistingObject();
 		thenModelToDocumentPropertiesHasBeenCalledWithDomainObject();
 	});
 
-	async function whenOverwriting() {
+	async function whenOverwritingExistingObject() {
 		testModel.mapToDocumentProperties.mockReturnValueOnce(returnedProperties);
 		testModel.findById.mockResolvedValueOnce(returnedDocument);
 		await testModule.overwrite(domainObject);
@@ -79,7 +80,7 @@ describe("AbstractMongooseModule", () => {
 
 	it("#overwrite should call model.findById with provided id", async () => {
 		givenDomainObject();
-		await whenOverwriting();
+		await whenOverwritingExistingObject();
 		thenModelFindByIdHasBeenCalledWithDomainObjectId();
 	});
 
@@ -89,7 +90,7 @@ describe("AbstractMongooseModule", () => {
 
 	it("#overwrite should call returnedDocument.overwrite with returned properties", async () => {
 		givenDomainObject();
-		await whenOverwriting();
+		await whenOverwritingExistingObject();
 		thenReturnedDocumentOverwriteHasBeenCalledWithReturnedProperties();
 	});
 
@@ -99,9 +100,25 @@ describe("AbstractMongooseModule", () => {
 
 	it("#overwrite should call returnedDocument.save", async () => {
 		givenDomainObject();
-		await whenOverwriting();
+		await whenOverwritingExistingObject();
 		thenReturnedDocumentSaveHasBeenCalled();
 	});
+
+	it("#overwrite should throw AppRuntimeError when there is no object with provided id", async () => {
+		givenDomainObjectAndFindByIdResolveToNull();
+		await thenOverwriteThrows(AppRuntimeError);
+	})
+
+	function givenDomainObjectAndFindByIdResolveToNull() {
+		givenDomainObject();
+		testModel.findById.mockResolvedValueOnce(null);
+	}
+
+	async function thenOverwriteThrows(error: any) {
+		expect.assertions(1);
+		await expect(testModule.overwrite(domainObject)).rejects.toBeInstanceOf(error);
+	}
+
 
 	it("#isExisting should call model.findById with provided id", async () => {
 		givenId();

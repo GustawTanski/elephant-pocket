@@ -34,7 +34,7 @@ export default class MongooseModuleImp<T extends DomainObject, S extends Documen
 		else this.throwNoObjectToOverwriteError(id);
 	}
 
-	throwNoObjectToOverwriteError(id: T["id"]): never {
+	private throwNoObjectToOverwriteError(id: T["id"]): never {
 		throw new AppRuntimeError(`there is no object with id: ${id} to overwrite`);
 	}
 
