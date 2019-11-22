@@ -1,5 +1,8 @@
-import DomainObject from "../../Core/Port/DomainObject";
 import { Document } from "mongoose";
+
+import DomainObject from "../../Core/Port/DomainObject";
+import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
+import { MongooseModel } from "./Model/AbstractMongooseModel";
 
 export interface MongooseModule<T extends DomainObject> {
 	create: (domainObject: T) => Promise<void>;
@@ -9,37 +12,44 @@ export interface MongooseModule<T extends DomainObject> {
 	readonly name: string;
 }
 
-export interface Mapper<T extends DomainObject, S extends Document> {
-	toDocument: (domainObject: T) => S;
-	toDocumentProperties: (domainObject: T) => {};
-	findById: (id: T["id"]) => Promise<S>;
-}
-
-export default abstract class AbstractMongooseModule<T extends DomainObject, S extends Document>
+export default class MongooseModuleImp<T extends DomainObject, S extends Document>
 	implements MongooseModule<T> {
-	abstract readonly name: string;
-	private mapper: Mapper<T, S>;
+	readonly name: string;
+	private model: MongooseModel<T, S>;
 
-	constructor(mapper: Mapper<T, S>) {
-		this.mapper = mapper;
+	constructor(model: MongooseModel<T, S>, name: string) {
+		this.model = model;
+		this.name = name;
 	}
 
 	async create(domainObject: T): Promise<void> {
-		const document: S = this.mapper.toDocument(domainObject);
+		const document: S = this.model.mapToDocument(domainObject);
 		await document.save();
 	}
 
 	async overwrite(domainObject: T): Promise<void> {
-		const document: S = await this.mapper.findById(domainObject.id);
-		const properties: {} = this.mapper.toDocumentProperties(domainObject);
+		const { id } = domainObject;
+		const document: S | null = await this.model.findById(id);
+		if (document) await this.overwriteDocumentWithDomainObject(document, domainObject);
+		else this.throwNoObjectToOverwriteError(id);
+	}
+
+	throwNoObjectToOverwriteError(id: T["id"]): never {
+		throw new AppRuntimeError(`there is no object with id: ${id} to overwrite`);
+	}
+
+	private async overwriteDocumentWithDomainObject(document: S, domainObject: T) {
+		const properties: {} = this.model.mapToDocumentProperties(domainObject);
 		document.overwrite(properties);
 		await document.save();
 	}
 
 	async isExisting(id: T["id"]): Promise<boolean> {
-		this.mapper.findById(id);
-		return (undefined as unknown) as boolean;
+		const document: S | null = await this.model.findById(id);
+		return !!document;
 	}
 
-	async delete(id: T["id"]): Promise<void> {}
+	async delete(id: T["id"]): Promise<void> {
+		await this.model.delete(id);
+	}
 }

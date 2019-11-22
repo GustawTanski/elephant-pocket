@@ -85,7 +85,7 @@ describe("MongoDBPersistenceService", () => {
 		expect(testModule.overwrite).toHaveBeenCalledWith(domainObject);
 	}
 
-	it("#delete should call .mongooseModule.findById with provided id", async () => {
+	it("#delete should call .mongooseModule.isExisting with provided id", async () => {
 		givenId();
 		await whenIsExistingResolveToTrueWhileDeleting();
 		thenIsExistingHaveBennCallWithProvidedId();

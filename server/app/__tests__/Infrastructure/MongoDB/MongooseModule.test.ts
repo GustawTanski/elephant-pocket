@@ -1,25 +1,21 @@
-import AbstractMongooseModule, { Mapper } from "../../../src/Infrastructure/MongoDB/MongooseModule";
+import MongooseModuleImp from "../../../src/Infrastructure/MongoDB/MongooseModule";
 import DomainObject from "../../../src/Core/Port/DomainObject";
 import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
-import { Document, Model } from "mongoose";
-
-jest.mock("mongoose");
-
-class TestModule<T extends DomainObject, S extends Document> extends AbstractMongooseModule<T, S> {
-	readonly name: string = "test";
-}
+import { Document } from "mongoose";
+import { MongooseModel } from "../../../src/Infrastructure/MongoDB/Model/AbstractMongooseModel";
 
 type T = DomainObject;
 type S = Document;
 
 class TestId extends AbstractUuidId {}
-const testMapper = {
-	toDocument: jest.fn<S, [T]>(),
-	toDocumentProperties: jest.fn<{}, [T]>(),
-	findById: jest.fn<Promise<S>, [T["id"]]>()
+const testModel = {
+	mapToDocument: jest.fn<S, [T]>(),
+	mapToDocumentProperties: jest.fn<{}, [T]>(),
+	findById: jest.fn<Promise<S | null>, [T["id"]]>(),
+	delete: jest.fn<Promise<void>, [T["id"]]>()
 };
 
-const testModule = new TestModule(testMapper as Mapper<T, S>);
+const testModule = new MongooseModuleImp(testModel as MongooseModel<T, S>, "test");
 const returnedDocument: S = ({
 	save: jest.fn<Promise<S>, []>(),
 	overwrite: jest.fn<S, [T]>()
@@ -31,13 +27,13 @@ let id: T["id"];
 
 describe("AbstractMongooseModule", () => {
 	beforeEach(() => {
-		testMapper.toDocument.mockReset();
-		testMapper.toDocumentProperties.mockReset();
+		testModel.mapToDocument.mockReset();
+		testModel.mapToDocumentProperties.mockReset();
 	});
-	it("#create should call mapper.toDocument ", async () => {
+	it("#create should call model.toDocument ", async () => {
 		givenDomainObject();
 		await whenCreating();
-		thenMapperToDocumentHasBeenCalledWithProvidedDomainObject();
+		thenModelToDocumentHasBeenCalledWithProvidedDomainObject();
 	});
 
 	function givenDomainObject() {
@@ -47,12 +43,12 @@ describe("AbstractMongooseModule", () => {
 	}
 
 	async function whenCreating() {
-		testMapper.toDocument.mockReturnValueOnce(returnedDocument);
+		testModel.mapToDocument.mockReturnValueOnce(returnedDocument);
 		await testModule.create(domainObject);
 	}
 
-	function thenMapperToDocumentHasBeenCalledWithProvidedDomainObject() {
-		expect(testMapper.toDocument).toHaveBeenCalledWith(domainObject);
+	function thenModelToDocumentHasBeenCalledWithProvidedDomainObject() {
+		expect(testModel.mapToDocument).toHaveBeenCalledWith(domainObject);
 	}
 
 	it("#create should call returnedDocument.save", async () => {
@@ -65,30 +61,30 @@ describe("AbstractMongooseModule", () => {
 		expect(returnedDocument.save).toHaveBeenCalled();
 	}
 
-	it("#overwrite should call mapper.toDocumentProperties", async () => {
+	it("#overwrite should call model.toDocumentProperties", async () => {
 		givenDomainObject();
 		await whenOverwriting();
-		thenMapperToDocumentPropertiesHasBeenCalledWithDomainObject();
+		thenModelToDocumentPropertiesHasBeenCalledWithDomainObject();
 	});
 
 	async function whenOverwriting() {
-		testMapper.toDocumentProperties.mockReturnValueOnce(returnedProperties);
-		testMapper.findById.mockResolvedValueOnce(returnedDocument);
+		testModel.mapToDocumentProperties.mockReturnValueOnce(returnedProperties);
+		testModel.findById.mockResolvedValueOnce(returnedDocument);
 		await testModule.overwrite(domainObject);
 	}
 
-	function thenMapperToDocumentPropertiesHasBeenCalledWithDomainObject() {
-		expect(testMapper.toDocumentProperties).toHaveBeenCalledWith(domainObject);
+	function thenModelToDocumentPropertiesHasBeenCalledWithDomainObject() {
+		expect(testModel.mapToDocumentProperties).toHaveBeenCalledWith(domainObject);
 	}
 
-	it("#overwrite should call mapper.findById with provided id", async () => {
+	it("#overwrite should call model.findById with provided id", async () => {
 		givenDomainObject();
 		await whenOverwriting();
-		thenMapperFindByIdHasBeenCalledWithDomainObjectId();
+		thenModelFindByIdHasBeenCalledWithDomainObjectId();
 	});
 
-	function thenMapperFindByIdHasBeenCalledWithDomainObjectId() {
-		expect(testMapper.findById).toHaveBeenCalledWith(domainObject.id);
+	function thenModelFindByIdHasBeenCalledWithDomainObjectId() {
+		expect(testModel.findById).toHaveBeenCalledWith(domainObject.id);
 	}
 
 	it("#overwrite should call returnedDocument.overwrite with returned properties", async () => {
@@ -107,10 +103,10 @@ describe("AbstractMongooseModule", () => {
 		thenReturnedDocumentSaveHasBeenCalled();
 	});
 
-	it("#isExisting should call mapper.findById with provided id", async () => {
+	it("#isExisting should call model.findById with provided id", async () => {
 		givenId();
-		whenCheckingDomainObjectExistence();
-		thenMapperFindByIdHasBeenCalledWithId();
+		await whenCheckingDomainObjectExistence();
+		thenModelFindByIdHasBeenCalledWithId();
 	});
 
 	function givenId() {
@@ -121,7 +117,47 @@ describe("AbstractMongooseModule", () => {
 		isExisting = await testModule.isExisting(id);
 	}
 
-	function thenMapperFindByIdHasBeenCalledWithId() {
-		expect(testMapper.findById).toHaveBeenCalledWith(id);
+	function thenModelFindByIdHasBeenCalledWithId() {
+		expect(testModel.findById).toHaveBeenCalledWith(id);
+	}
+
+	it("#isExisting should return false when model.findById resolve to null", async () => {
+		givenIdAndFindByIdResolvingToNull();
+		whenCheckingDomainObjectExistence();
+		await thenIsExistingResolveTo(false);
+	});
+
+	function givenIdAndFindByIdResolvingToNull() {
+		givenId();
+		testModel.findById.mockResolvedValueOnce(null);
+	}
+
+	function thenIsExistingResolveTo(value: boolean) {
+		expect(isExisting).toBe(value);
+	}
+
+	it("#isExisting should return true when model.findById resolve to instance of Document", async () => {
+		givenIdAndFindByIdResolvingToDocument();
+		await whenCheckingDomainObjectExistence();
+		thenIsExistingResolveTo(true);
+	});
+
+	function givenIdAndFindByIdResolvingToDocument() {
+		givenId();
+		testModel.findById.mockResolvedValueOnce(returnedDocument);
+	}
+
+	it("#delete should call model.delete", async () => {
+		givenId();
+		await whenDeleting();
+		thenModelDeleteHasBeenCalledWithId();
+	});
+
+	async function whenDeleting() {
+		await testModule.delete(id);
+	}
+
+	function thenModelDeleteHasBeenCalledWithId() {
+		expect(testModel.delete).toHaveBeenCalledWith(id);
 	}
 });
