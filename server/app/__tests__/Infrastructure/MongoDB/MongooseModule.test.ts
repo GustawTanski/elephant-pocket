@@ -140,8 +140,8 @@ describe("AbstractMongooseModule", () => {
 
 	it("#isExisting should return false when model.findById resolve to null", async () => {
 		givenIdAndFindByIdResolvingToNull();
-		whenCheckingDomainObjectExistence();
-		await thenIsExistingResolveTo(false);
+		await whenCheckingDomainObjectExistence();
+		thenIsExistingResolveTo(false);
 	});
 
 	function givenIdAndFindByIdResolvingToNull() {
