@@ -1,3 +1,3 @@
-export default class MongooseQuery {
-    
-}
+import { Query } from "mongoose";
+
+new Query().wh
