@@ -11,11 +11,7 @@ export interface MongooseModel<T extends DomainObject, S extends Document> {
 
 export default abstract class AbstractMongooseModel<T extends DomainObject, S extends Document>
 	implements MongooseModel<T, S> {
-	private model: Model<S, {}>;
-
-	constructor(model: Model<S, {}>) {
-		this.model = model;
-	}
+	protected abstract model: Model<S, {}>;
 
 	abstract mapToDocument(domainObject: T): S;
 

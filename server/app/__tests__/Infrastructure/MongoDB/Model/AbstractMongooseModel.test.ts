@@ -10,6 +10,11 @@ type S = Document;
 const mapToDocument = jest.fn<S, [T]>();
 const mapToDocumentProperties = jest.fn<{}, [T]>();
 
+const model = {
+	findById: jest.fn<Query<S | null>, [any]>(),
+	findByIdAndDelete: jest.fn<Query<S | null>, [any]>()
+};
+
 class TestMongooseModel extends AbstractMongooseModel<T, S> {
 	mapToDocument(domainObject: T): S {
 		return mapToDocument(domainObject);
@@ -17,16 +22,14 @@ class TestMongooseModel extends AbstractMongooseModel<T, S> {
 	mapToDocumentProperties(domainObject: T): {} {
 		return mapToDocumentProperties(domainObject);
 	}
+
+	protected model = (model as unknown) as Model<S, {}>;
 }
 
 class TestId extends AbstractUuidId {}
 
-const model = {
-	findById: jest.fn<Query<S | null>, [any]>(),
-	findByIdAndDelete: jest.fn<Query<S | null>, [any]>()
-};
 const returnedDocument = {} as Document;
-const testMongooseModel = new TestMongooseModel((model as unknown) as Model<S, {}>);
+const testMongooseModel = new TestMongooseModel();
 let id: TestId;
 
 describe("AbstractMongooseModel", () => {
