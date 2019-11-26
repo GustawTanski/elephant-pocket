@@ -1,12 +1,14 @@
-import MongooseQueryService, {
-	QueryObject,
-	Filter
-} from "../../../src/Infrastructure/MongoDB/MongooseQueryService";
+import MongooseQueryService from "../../../src/Infrastructure/MongoDB/MongooseQueryService";
 import DomainObject from "../../../src/Core/Port/DomainObject";
 import { Document, Model, Query } from "mongoose";
 import { List } from "immutable";
 import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import UuidGenerator from "../../../lib/ts-extension/src/Uuid/UuidGenerator";
+import {
+	QueryObject,
+	Filter,
+	filterFactory
+} from "../../../src/Infrastructure/MongoDB/MongoDBQueryBuilder";
 
 const testModel = {
 	find: jest.fn<Query<S>, []>()
@@ -15,7 +17,7 @@ type T = DomainObject;
 type S = Document;
 class TestId extends AbstractUuidId {}
 class TestQueryService extends MongooseQueryService<T, S> {
-	protected mapToDomainObject(document: S): T {
+	protected mapToDomainObjectData(document: S): T {
 		return {
 			id: new TestId(document._id)
 		};
@@ -27,6 +29,9 @@ const thenValueMock = jest.fn();
 const queryMock = {
 	where: jest.fn<Query<S[]>, [string]>(),
 	gt: jest.fn<Query<S[]>, [any]>(),
+	lt: jest.fn<Query<S[]>, [any]>(),
+	lte: jest.fn<Query<S[]>, [any]>(),
+	gte: jest.fn<Query<S[]>, [any]>(),
 	equals: jest.fn<Query<S[]>, [any]>(),
 	then(cb: (val: any) => void) {
 		cb(thenValueMock());
@@ -37,6 +42,9 @@ const singleQueryMock = {
 	where: singleMockFunction,
 	gt: singleMockFunction,
 	equals: singleMockFunction,
+	lt: singleMockFunction,
+	lte: singleMockFunction,
+	gte: singleMockFunction,
 	then: queryMock.then
 };
 const defaultFilter: Filter<any> = {
@@ -45,7 +53,7 @@ const defaultFilter: Filter<any> = {
 };
 
 let queryObject: QueryObject;
-let returnedList: List<T>;
+let returnedList: List<Partial<T>>;
 let foundDocuments: Array<Document>;
 
 describe("MongooseQueryService", () => {
@@ -91,13 +99,14 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenQueryObjectWithWhereFilter() {
+		const rawFilters: Filter<any>[] = [
+			{
+				name: "where",
+				value: "dog"
+			}
+		];
 		queryObject = {
-			filters: List<Filter<any>>([
-				{
-					name: "where",
-					value: "dog"
-				}
-			] as Array<Filter<any>>)
+			filters: List<Filter<any>>(rawFilters.map(filterFactory))
 		};
 	}
 
@@ -123,17 +132,18 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenQueryObjectWithTwoWhere() {
+		const rawList: Filter<any>[] = [
+			{
+				name: "where",
+				value: "dogs"
+			},
+			{
+				name: "where",
+				value: "cats"
+			}
+		];
 		queryObject = {
-			filters: List([
-				{
-					name: "where",
-					value: "dogs"
-				},
-				{
-					name: "where",
-					value: "cats"
-				}
-			] as Array<Filter<any>>)
+			filters: List(rawList.map(filterFactory))
 		};
 	}
 
@@ -165,7 +175,7 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenFourFiltersQueryObject() {
-		let filters = List<Filter<any>>().push(
+		const rawFilters: Filter<any>[] = [
 			{
 				name: "where",
 				value: "name"
@@ -182,7 +192,8 @@ describe("MongooseQueryService", () => {
 				name: "gt",
 				value: 18
 			}
-		);
+		];
+		const filters = List<Filter<any>>(rawFilters.map(filterFactory));
 		queryObject = {
 			filters
 		};
@@ -249,9 +260,10 @@ describe("MongooseQueryService", () => {
 	}
 
 	function thenReturnedListMatchesThatArray() {
+		expect.assertions(1 + returnedList.size);
 		expect(returnedList.size).toBe(foundDocuments.length);
 		returnedList.forEach((object, index) => {
-			expect(object.id.toString()).toBe(foundDocuments[index]._id);
+			if (object.id) expect(object.id.toString()).toBe(foundDocuments[index]._id);
 		});
 	}
 });
