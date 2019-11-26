@@ -4,22 +4,49 @@ import MongooseQueryService, {
 } from "../../../src/Infrastructure/MongoDB/MongooseQueryService";
 import DomainObject from "../../../src/Core/Port/DomainObject";
 import { Document, Model, Query } from "mongoose";
+import { List } from "immutable";
+import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import UuidGenerator from "../../../lib/ts-extension/src/Uuid/UuidGenerator";
 
 const testModel = {
 	find: jest.fn<Query<S>, []>()
 };
 type T = DomainObject;
 type S = Document;
+class TestId extends AbstractUuidId {}
 class TestQueryService extends MongooseQueryService<T, S> {
-	model = (testModel as unknown) as Model<S, {}>;
+	protected mapToDomainObject(document: S): T {
+		return {
+			id: new TestId(document._id)
+		};
+	}
+	protected model = (testModel as unknown) as Model<S, {}>;
 }
 const queryService = new TestQueryService();
+const thenValueMock = jest.fn();
 const queryMock = {
-	where: jest.fn<Query<S>, [string]>()
+	where: jest.fn<Query<S[]>, [string]>(),
+	gt: jest.fn<Query<S[]>, [any]>(),
+	equals: jest.fn<Query<S[]>, [any]>(),
+	then(cb: (val: any) => void) {
+		cb(thenValueMock());
+	}
 };
-const possibleFilterNames = ["where"];
+const singleMockFunction = jest.fn<Query<S[]>, [any]>();
+const singleQueryMock = {
+	where: singleMockFunction,
+	gt: singleMockFunction,
+	equals: singleMockFunction,
+	then: queryMock.then
+};
+const defaultFilter: Filter<any> = {
+	name: "where",
+	value: ""
+};
 
 let queryObject: QueryObject;
+let returnedList: List<T>;
+let foundDocuments: Array<Document>;
 
 describe("MongooseQueryService", () => {
 	beforeEach(() => {
@@ -27,6 +54,14 @@ describe("MongooseQueryService", () => {
 		testModel.find.mockReturnValue((queryMock as unknown) as Query<S>);
 		queryMock.where.mockReset();
 		queryMock.where.mockReturnThis();
+		queryMock.gt.mockReset();
+		queryMock.gt.mockReturnThis();
+		queryMock.equals.mockReset();
+		queryMock.equals.mockReturnThis();
+		singleMockFunction.mockReset();
+		singleMockFunction.mockReturnThis();
+		thenValueMock.mockReset();
+		thenValueMock.mockReturnValue(new Array<Document>());
 	});
 
 	it("#query should call model.find with no arguments", async () => {
@@ -37,12 +72,12 @@ describe("MongooseQueryService", () => {
 
 	function givenEmptyObjectQuery() {
 		queryObject = {
-			filters: new Array<Filter>()
+			filters: List<Filter<any>>()
 		};
 	}
 
 	async function whenQuerying() {
-		await queryService.query(queryObject);
+		returnedList = await queryService.query(queryObject);
 	}
 
 	function thenModelFindHasBeenCalledWithNoArguments() {
@@ -57,17 +92,18 @@ describe("MongooseQueryService", () => {
 
 	function givenQueryObjectWithWhereFilter() {
 		queryObject = {
-			filters: [
+			filters: List<Filter<any>>([
 				{
 					name: "where",
 					value: "dog"
 				}
-			]
+			] as Array<Filter<any>>)
 		};
 	}
 
 	function thenQueryWhereHasBeenCalledWithProvidedValue() {
-		expect(queryMock.where).toHaveBeenCalledWith(queryObject.filters[0].value);
+		const firstFilter = queryObject.filters.get(0) as Filter<any>;
+		expect(queryMock.where).toHaveBeenCalledWith(firstFilter.value);
 	}
 
 	it("#query should not call returned query.where if there is not where in filters", async () => {
@@ -88,7 +124,7 @@ describe("MongooseQueryService", () => {
 
 	function givenQueryObjectWithTwoWhere() {
 		queryObject = {
-			filters: [
+			filters: List([
 				{
 					name: "where",
 					value: "dogs"
@@ -97,7 +133,7 @@ describe("MongooseQueryService", () => {
 					name: "where",
 					value: "cats"
 				}
-			]
+			] as Array<Filter<any>>)
 		};
 	}
 
@@ -112,18 +148,110 @@ describe("MongooseQueryService", () => {
 	});
 
 	function thenQueryWhereHasBeenCalledTwiceWithProvidedValues() {
-		expect(queryMock.where).toHaveBeenNthCalledWith(1, queryObject.filters[0].value);
-		expect(queryMock.where).toHaveBeenNthCalledWith(2, queryObject.filters[1].value);
+		expect(queryMock.where).toHaveBeenNthCalledWith(
+			1,
+			queryObject.filters.get(0, defaultFilter).value
+		);
+		expect(queryMock.where).toHaveBeenNthCalledWith(
+			2,
+			queryObject.filters.get(1, defaultFilter).value
+		);
 	}
 
-	// it("#query should call returned query corresponding methods with provided values in correct order", async () => {
-	// 	givenRandomQueryObject();
-	// 	await whenQuerying();
-	// }
+	it("#query should call returned query corresponding methods with provided values", async () => {
+		givenFourFiltersQueryObject();
+		await whenQuerying();
+		thenQueryCorrespondingMethodsHaveBeenCalledWithProvidedValues();
+	});
 
-	// 	function givenRandomQueryObject() {
-	// 		queryObject = {
-	// 			filters
-	// 		}
-	// 	}
+	function givenFourFiltersQueryObject() {
+		let filters = List<Filter<any>>().push(
+			{
+				name: "where",
+				value: "name"
+			},
+			{
+				name: "equals",
+				value: "Gus"
+			},
+			{
+				name: "where",
+				value: "age"
+			},
+			{
+				name: "gt",
+				value: 18
+			}
+		);
+		queryObject = {
+			filters
+		};
+	}
+
+	function thenQueryCorrespondingMethodsHaveBeenCalledWithProvidedValues() {
+		queryObject.filters.forEach(query => {
+			expect(queryMock[query.name]).toHaveBeenCalledWith(query.value);
+		});
+	}
+
+	it("#query should call returned query corresponding methods in correct order", async () => {
+		givenFourFiltersQueryObject();
+		await whenQueryingWithSingleMock();
+		thenQueryCorrespondingMethodsHaveBeenCalledWithCorrectOrder();
+	});
+
+	async function whenQueryingWithSingleMock() {
+		testModel.find.mockReset();
+		testModel.find.mockReturnValueOnce((singleQueryMock as unknown) as Query<S>);
+		await queryService.query(queryObject);
+	}
+
+	function thenQueryCorrespondingMethodsHaveBeenCalledWithCorrectOrder() {
+		queryObject.filters.forEach((query, index) => {
+			expect(singleQueryMock[query.name]).toHaveBeenNthCalledWith(index + 1, query.value);
+		});
+	}
+
+	it("#query should return empty List if returned query resolve to empty Array", async () => {
+		givenEmptyQueryObjectAndQueryResolvingToEmptyArray();
+		await whenQuerying();
+		thenReturnedListIsEmpty();
+	});
+
+	function givenEmptyQueryObjectAndQueryResolvingToEmptyArray() {
+		givenEmptyObjectQuery();
+		thenValueMock.mockReset();
+		foundDocuments = new Array<S>();
+		thenValueMock.mockReturnValueOnce(foundDocuments);
+	}
+
+	function thenReturnedListIsEmpty() {
+		expect(returnedList.size).toBe(0);
+	}
+
+	it("#query should return List with same size and order as Array query resolve to", async () => {
+		givenEmptyObjectQueryAndQueryResolvingToNotEmptyArray();
+		await whenQuerying();
+		thenReturnedListMatchesThatArray();
+	});
+
+	function givenEmptyObjectQueryAndQueryResolvingToNotEmptyArray() {
+		givenEmptyObjectQuery();
+		thenValueMock.mockReset();
+		foundDocuments = [
+			{ _id: UuidGenerator.generateAsString() },
+			{ _id: UuidGenerator.generateAsString() },
+			{ _id: UuidGenerator.generateAsString() },
+			{ _id: UuidGenerator.generateAsString() },
+			{ _id: UuidGenerator.generateAsString() }
+		] as Array<S>;
+		thenValueMock.mockReturnValueOnce(foundDocuments);
+	}
+
+	function thenReturnedListMatchesThatArray() {
+		expect(returnedList.size).toBe(foundDocuments.length);
+		returnedList.forEach((object, index) => {
+			expect(object.id.toString()).toBe(foundDocuments[index]._id);
+		});
+	}
 });
