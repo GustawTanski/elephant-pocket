@@ -1,9 +1,9 @@
-import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/MongoDBUserPersistenceService";
-import User from "../../../src/Core/Component/User/Domain/User/User";
-import { UserModel, UserMapper } from "../../../src/Infrastructure/MongoDB/Model/User";
-import { mongoBeforeAll, mongoAfterAll } from "./mongoDBTestHelper";
-import UserId from "../../../src/Core/SharedKernel/Component/User/Domain/User/UserId";
-import { lauryn, dee, earline, otilia } from "../../Core/Component/User/Domain/User/sampleUsers";
+import MongoDBUserPersistanceService from "../../../../src/Infrastructure/MongoDB/Persistence/MongoDBUserPersistenceService";
+import User from "../../../../src/Core/Component/User/Domain/User/User";
+import { UserModel, UserMapper } from "../../../../src/Infrastructure/MongoDB/Model/User";
+import { mongoBeforeAll, mongoAfterAll } from "../mongoDBTestHelper";
+import UserId from "../../../../src/Core/SharedKernel/Component/User/Domain/User/UserId";
+import { lauryn, dee, earline, otilia } from "../../../Core/Component/User/Domain/User/sampleUsers";
 
 const service = new MongoDBUserPersistanceService();
 describe("MongoDBUserPersistenceService#save", () => {

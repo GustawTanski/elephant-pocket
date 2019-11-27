@@ -1,8 +1,5 @@
-import { List, Record } from "immutable";
-
-export interface QueryObject {
-	filters: List<Filter<any>>;
-}
+import { List } from "immutable";
+import QueryObject from "./QueryObject";
 
 export interface GenericFilter<T> {
 	name: "gt" | "equals" | "gte" | "lt" | "lte";
@@ -15,10 +12,11 @@ export interface StringFilter {
 }
 
 export type Filter<T> = StringFilter | GenericFilter<T>;
+export type ReadonlyFilter = Readonly<Filter<any>>;
 
 export default class MongoDBQueryBuilder {
 	private collectionName: string;
-	private filters: List<Record<Filter<any>>> = List<Record<Filter<any>>>();
+	private filters: List<ReadonlyFilter> = List<ReadonlyFilter>();
 
 	static create(collectionName: string): MongoDBQueryBuilder {
 		return new MongoDBQueryBuilder(collectionName);
@@ -42,10 +40,29 @@ export default class MongoDBQueryBuilder {
 		this.addFilter({ name: "lt", value });
 		return this;
 	}
+	gte<T>(value: T): this {
+		this.addFilter({ name: "gte", value });
+		return this;
+	}
 
-	private addFilter(filter: Filter<any>) {
-		this.filters = this.filters.push(filterFactory(filter));
+	lte<T>(value: T): this {
+		this.addFilter({ name: "lte", value });
+		return this;
+	}
+
+	equals<T>(value: T): this {
+		this.addFilter({ name: "equals", value });
+		return this;
+	}
+
+	private addFilter(filter: ReadonlyFilter) {
+		this.filters = this.filters.push(filter);
+	}
+
+	build(): Readonly<QueryObject> {
+		return {
+			filters: this.filters,
+			collectionName: this.collectionName
+		};
 	}
 }
-
-export const filterFactory = Record<Filter<any>>({ name: "where", value: "" });

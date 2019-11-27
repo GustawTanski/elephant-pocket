@@ -1,4 +1,4 @@
-import AbstractMongooseModel from "../../../../src/Infrastructure/MongoDB/Model/AbstractMongooseModel";
+import AbstractMongoosePersistenceModel from "../../../../src/Infrastructure/MongoDB/Model/AbstractMongoosePersistenceModel";
 import DomainObject from "../../../../src/Core/Port/DomainObject";
 import { Document, Model, Query } from "mongoose";
 import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
@@ -15,7 +15,7 @@ const model = {
 	findByIdAndDelete: jest.fn<Query<S | null>, [any]>()
 };
 
-class TestMongooseModel extends AbstractMongooseModel<T, S> {
+class TestMongooseModel extends AbstractMongoosePersistenceModel<T, S> {
 	mapToDocument(domainObject: T): S {
 		return mapToDocument(domainObject);
 	}
@@ -32,7 +32,7 @@ const returnedDocument = {} as Document;
 const testMongooseModel = new TestMongooseModel();
 let id: TestId;
 
-describe("AbstractMongooseModel", () => {
+describe("AbstractMongoosePersistenceModel", () => {
 	it("#findById should call model.findById with provided id", async () => {
 		givenId();
 		await whenFindByIdIsCalled();

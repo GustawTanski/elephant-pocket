@@ -8,13 +8,12 @@ import cors from "cors";
 import UserRESTAPI from "./src/UserInterface/REST/Endpoints/UserRESTAPI";
 import UserService from "./src/Core/Component/User/Aplication/Service/UserService";
 import UserRepository from "./src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
-import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/MongoDBUserPersistenceService";
+import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/Persistence/MongoDBUserPersistenceService";
 import crypter from "./lib/ts-extension/src/Encryption/crypter";
 import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
 import DailyLimitBudget from "./src/Core/Component/Budget/Domain/Budget/DailyLimitBudget";
 import DateRange from "./lib/ts-extension/src/DateRange/DateRange";
 import IncomeEvent from "./src/Core/Component/Budget/Domain/Event/IncomeEvent";
-import MongoDBBudgetPersistenceService from "./src/Infrastructure/MongoDB/MongoDBBudgetPersistenceService";
 import UserId from "./src/Core/SharedKernel/Component/User/Domain/User/UserId";
 
 if (dotenvConfigResult.error) throw dotenvConfigResult.error;
@@ -41,20 +40,6 @@ app.use("/login", loginAPI.router);
 app.listen(PORT, function appStarted() {
 	console.log(`Listening on ${PORT} port...`);
 });
-
-const budget = new DailyLimitBudget({
-	minimalBalance: 0,
-	dateRange: new DateRange({ begin: Date.now(), end: Date.now() + 10 ** 6 }),
-	ownerId: new UserId()
-});
-budget.pushEvent(
-	new IncomeEvent({
-		balanceChange: 100
-	})
-);
-console.log(budget);
-const budgetService = new MongoDBBudgetPersistenceService();
-budgetService.save(budget);
 
 if (MONGODB_URI) {
 	mongoose.connect(

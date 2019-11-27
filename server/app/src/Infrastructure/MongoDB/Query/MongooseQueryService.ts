@@ -1,7 +1,8 @@
-import DomainObject from "../../Core/Port/DomainObject";
+import DomainObject from "../../../Core/Port/DomainObject";
 import { Model, Document, Query } from "mongoose";
 import { List } from "immutable";
-import { QueryObject, Filter } from "./MongoDBQueryBuilder";
+import { ReadonlyFilter } from "./MongoDBQueryBuilder";
+import QueryObject from "./QueryObject";
 
 export default abstract class MongooseQueryService<T extends DomainObject, S extends Document> {
 	protected abstract model: Model<S, {}>;
@@ -14,11 +15,11 @@ export default abstract class MongooseQueryService<T extends DomainObject, S ext
 		return List(domainObjects);
 	}
 
-	private executeFilters(filters: List<Filter<any>>, query: Query<S[]>): Query<S[]> {
+	private executeFilters(filters: List<ReadonlyFilter>, query: Query<S[]>): Query<S[]> {
 		return filters.reduce(this.chainQuery, query);
 	}
 
-	private chainQuery(query: Query<S[]>, filter: Filter<any>): Query<S[]> {
+	private chainQuery(query: Query<S[]>, filter: ReadonlyFilter): Query<S[]> {
 		if (filter.name == "where") return query.where(filter.value);
 		else return query[filter.name](filter.value);
 	}

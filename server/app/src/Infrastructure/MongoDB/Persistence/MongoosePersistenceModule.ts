@@ -1,10 +1,10 @@
 import { Document } from "mongoose";
 
-import DomainObject from "../../Core/Port/DomainObject";
-import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
-import { MongooseModel } from "./Model/AbstractMongooseModel";
+import DomainObject from "../../../Core/Port/DomainObject";
+import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
+import { MongoosePersistenceModel } from "../Model/AbstractMongoosePersistenceModel";
 
-export interface MongooseModule<T extends DomainObject> {
+export interface MongoosePersistenceModule<T extends DomainObject> {
 	create: (domainObject: T) => Promise<void>;
 	overwrite: (domainObject: T) => Promise<void>;
 	isExisting: (id: T["id"]) => Promise<boolean>;
@@ -12,12 +12,12 @@ export interface MongooseModule<T extends DomainObject> {
 	readonly name: string;
 }
 
-export default class MongooseModuleImp<T extends DomainObject, S extends Document>
-	implements MongooseModule<T> {
+export default class MongoosePersistenceModuleImp<T extends DomainObject, S extends Document>
+	implements MongoosePersistenceModule<T> {
 	readonly name: string;
-	private model: MongooseModel<T, S>;
+	private model: MongoosePersistenceModel<T, S>;
 
-	constructor(model: MongooseModel<T, S>, name: string) {
+	constructor(model: MongoosePersistenceModel<T, S>, name: string) {
 		this.model = model;
 		this.name = name;
 	}

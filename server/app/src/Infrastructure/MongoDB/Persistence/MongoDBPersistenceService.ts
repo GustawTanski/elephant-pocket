@@ -1,11 +1,11 @@
-import AppRuntimeError from "../../Core/SharedKernel/Error/AppRuntimeError";
-import DomainObject from "../../Core/Port/DomainObject";
-import { MongooseModule } from "./MongooseModule";
+import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
+import DomainObject from "../../../Core/Port/DomainObject";
+import { MongoosePersistenceModule } from "./MongoosePersistenceModule";
 
 export default class MongoDBPersistenceService<T extends DomainObject> {
-	private mongooseModule: MongooseModule<T>;
+	private mongooseModule: MongoosePersistenceModule<T>;
 
-	constructor(mongooseModule: MongooseModule<T>) {
+	constructor(mongooseModule: MongoosePersistenceModule<T>) {
 		this.mongooseModule = mongooseModule;
 	}
 

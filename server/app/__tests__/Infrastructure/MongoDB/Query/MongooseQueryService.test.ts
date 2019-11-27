@@ -1,14 +1,13 @@
-import MongooseQueryService from "../../../src/Infrastructure/MongoDB/MongooseQueryService";
-import DomainObject from "../../../src/Core/Port/DomainObject";
+import MongooseQueryService from "../../../../src/Infrastructure/MongoDB/Query/MongooseQueryService";
+import DomainObject from "../../../../src/Core/Port/DomainObject";
 import { Document, Model, Query } from "mongoose";
 import { List } from "immutable";
-import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
-import UuidGenerator from "../../../lib/ts-extension/src/Uuid/UuidGenerator";
+import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 import {
-	QueryObject,
-	Filter,
-	filterFactory
-} from "../../../src/Infrastructure/MongoDB/MongoDBQueryBuilder";
+	ReadonlyFilter
+} from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
+import QueryObject from "../../../../src/Infrastructure/MongoDB/Query/QueryObject";
 
 const testModel = {
 	find: jest.fn<Query<S>, []>()
@@ -47,7 +46,7 @@ const singleQueryMock = {
 	gte: singleMockFunction,
 	then: queryMock.then
 };
-const defaultFilter: Filter<any> = {
+const defaultFilter: ReadonlyFilter = {
 	name: "where",
 	value: ""
 };
@@ -80,7 +79,7 @@ describe("MongooseQueryService", () => {
 
 	function givenEmptyObjectQuery() {
 		queryObject = {
-			filters: List<Filter<any>>()
+			filters: List<ReadonlyFilter>()
 		};
 	}
 
@@ -99,19 +98,19 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenQueryObjectWithWhereFilter() {
-		const rawFilters: Filter<any>[] = [
+		const filters: ReadonlyFilter[] = [
 			{
 				name: "where",
 				value: "dog"
 			}
 		];
 		queryObject = {
-			filters: List<Filter<any>>(rawFilters.map(filterFactory))
+			filters: List(filters)
 		};
 	}
 
 	function thenQueryWhereHasBeenCalledWithProvidedValue() {
-		const firstFilter = queryObject.filters.get(0) as Filter<any>;
+		const firstFilter: ReadonlyFilter = queryObject.filters.get(0, defaultFilter);
 		expect(queryMock.where).toHaveBeenCalledWith(firstFilter.value);
 	}
 
@@ -132,7 +131,7 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenQueryObjectWithTwoWhere() {
-		const rawList: Filter<any>[] = [
+		const filters: ReadonlyFilter[] = [
 			{
 				name: "where",
 				value: "dogs"
@@ -143,7 +142,7 @@ describe("MongooseQueryService", () => {
 			}
 		];
 		queryObject = {
-			filters: List(rawList.map(filterFactory))
+			filters: List(filters)
 		};
 	}
 
@@ -175,7 +174,7 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenFourFiltersQueryObject() {
-		const rawFilters: Filter<any>[] = [
+		const filters: ReadonlyFilter[] = [
 			{
 				name: "where",
 				value: "name"
@@ -193,9 +192,8 @@ describe("MongooseQueryService", () => {
 				value: 18
 			}
 		];
-		const filters = List<Filter<any>>(rawFilters.map(filterFactory));
 		queryObject = {
-			filters
+			filters: List(filters)
 		};
 	}
 

@@ -5,13 +5,13 @@ import {
 	BudgetDocument,
 	BudgetDocumentInput
 } from "../../../../../src/Infrastructure/MongoDB/Model/Budget/BudgetSchema";
-import BudgetModel from "../../../../../src/Infrastructure/MongoDB/Model/Budget/BudgetModel";
+import BudgetPersistenceModel from "../../../../../src/Infrastructure/MongoDB/Model/Budget/BudgetPersistenceModel";
 
 class TestBudget extends Budget {
 	readonly type = "STRING";
 }
 
-const budgetModel = new BudgetModel();
+const budgetModel = new BudgetPersistenceModel();
 
 let budget: Budget;
 let document: BudgetDocument;

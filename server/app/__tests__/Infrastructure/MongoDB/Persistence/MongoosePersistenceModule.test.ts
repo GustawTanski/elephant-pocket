@@ -1,9 +1,9 @@
-import MongooseModuleImp from "../../../src/Infrastructure/MongoDB/MongooseModule";
-import DomainObject from "../../../src/Core/Port/DomainObject";
-import AbstractUuidId from "../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import MongoosePersistenceModuleImp from "../../../../src/Infrastructure/MongoDB/Persistence/MongoosePersistenceModule";
+import DomainObject from "../../../../src/Core/Port/DomainObject";
+import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import { Document } from "mongoose";
-import { MongooseModel } from "../../../src/Infrastructure/MongoDB/Model/AbstractMongooseModel";
-import AppRuntimeError from "../../../src/Core/SharedKernel/Error/AppRuntimeError";
+import { MongoosePersistenceModel } from "../../../../src/Infrastructure/MongoDB/Model/AbstractMongoosePersistenceModel";
+import AppRuntimeError from "../../../../src/Core/SharedKernel/Error/AppRuntimeError";
 
 type T = DomainObject;
 type S = Document;
@@ -16,7 +16,7 @@ const testModel = {
 	delete: jest.fn<Promise<void>, [T["id"]]>()
 };
 
-const testModule = new MongooseModuleImp(testModel as MongooseModel<T, S>, "test");
+const testModule = new MongoosePersistenceModuleImp(testModel as MongoosePersistenceModel<T, S>, "test");
 const returnedDocument: S = ({
 	save: jest.fn<Promise<S>, []>(),
 	overwrite: jest.fn<S, [T]>()
@@ -26,7 +26,7 @@ let domainObject: T;
 let isExisting: boolean;
 let id: T["id"];
 
-describe("AbstractMongooseModule", () => {
+describe("MongoosePersistenceModuleImp", () => {
 	beforeEach(() => {
 		testModel.mapToDocument.mockReset();
 		testModel.mapToDocumentProperties.mockReset();

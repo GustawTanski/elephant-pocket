@@ -4,7 +4,7 @@ process.env.JWT_SECRET = "testSecret";
 
 import UserService from "../../../src/Core/Component/User/Aplication/Service/UserService";
 import UserRepository from "../../../src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
-import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/MongoDBUserPersistenceService";
+import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/Persistence/MongoDBUserPersistenceService";
 import crypter from "../../../lib/ts-extension/src/Encryption/crypter";
 import { mongoBeforeAll, mongoAfterAll } from "../../Infrastructure/MongoDB/mongoDBTestHelper";
 import { UserModel } from "../../../src/Infrastructure/MongoDB/Model/User";
