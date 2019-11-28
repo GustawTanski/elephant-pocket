@@ -3,5 +3,5 @@ import { ReadonlyFilter } from "./MongoDBQueryBuilder";
 
 export default interface QueryObject {
 	filters: List<ReadonlyFilter>;
-	collectionName?: string;
+	hydrate: boolean;
 }

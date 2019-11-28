@@ -1,18 +1,24 @@
 import DomainObject from "../../../Core/Port/DomainObject";
-import { Model, Document, Query } from "mongoose";
+import { Document, Query } from "mongoose";
 import { List } from "immutable";
 import { ReadonlyFilter } from "./MongoDBQueryBuilder";
 import QueryObject from "./QueryObject";
 
-export default abstract class MongooseQueryService<T extends DomainObject, S extends Document> {
-	protected abstract model: Model<S, {}>;
+export interface MongooseQueryModel<T extends DomainObject, S extends Document> {
+	find(): Query<S[]>;
+	mapToHydratedDomainObject(document: S): T;
+	mapToPartialDomainObject(document: S): Partial<T>;
+}
 
-	async query(queryObject: QueryObject): Promise<List<Partial<T>>> {
+export default abstract class MongooseQueryService<T extends DomainObject, S extends Document> {
+	protected abstract model: MongooseQueryModel<T, S>;
+
+	async query(queryObject: QueryObject): Promise<List<T | Partial<T>>> {
 		let query = this.model.find();
 		query = this.executeFilters(queryObject.filters, query);
 		const documents: S[] = await query;
-		const domainObjects = this.mapDocumentsToDomainObjectsData(documents);
-		return List(domainObjects);
+		if (queryObject.hydrate) return this.mapDocumentsToHydratedList(documents);
+		else return this.mapDocumentsToPartialList(documents);
 	}
 
 	private executeFilters(filters: List<ReadonlyFilter>, query: Query<S[]>): Query<S[]> {
@@ -24,9 +30,13 @@ export default abstract class MongooseQueryService<T extends DomainObject, S ext
 		else return query[filter.name](filter.value);
 	}
 
-	private mapDocumentsToDomainObjectsData(documents: S[]): Partial<T>[] {
-		return documents.map(this.mapToDomainObjectData);
+	private mapDocumentsToHydratedList(documents: S[]): List<T> {
+		const hydratedObjects: T[] = documents.map(this.model.mapToHydratedDomainObject);
+		return List(hydratedObjects);
 	}
 
-	protected abstract mapToDomainObjectData(document: S): Partial<T>;
+	private mapDocumentsToPartialList(documents: S[]): List<Partial<T>> {
+		const partialObjects: Partial<T>[] = documents.map(this.model.mapToPartialDomainObject);
+		return List(partialObjects);
+	}
 }

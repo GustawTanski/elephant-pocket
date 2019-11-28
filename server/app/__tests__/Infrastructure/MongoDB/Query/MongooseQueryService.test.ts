@@ -1,27 +1,26 @@
-import MongooseQueryService from "../../../../src/Infrastructure/MongoDB/Query/MongooseQueryService";
+import MongooseQueryService, {
+	MongooseQueryModel
+} from "../../../../src/Infrastructure/MongoDB/Query/MongooseQueryService";
 import DomainObject from "../../../../src/Core/Port/DomainObject";
-import { Document, Model, Query } from "mongoose";
+import { Document, Query } from "mongoose";
 import { List } from "immutable";
 import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
-import {
-	ReadonlyFilter
-} from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
+import { ReadonlyFilter } from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
 import QueryObject from "../../../../src/Infrastructure/MongoDB/Query/QueryObject";
 
-const testModel = {
-	find: jest.fn<Query<S>, []>()
-};
 type T = DomainObject;
 type S = Document;
+
+const testModel = {
+	find: jest.fn<Query<S>, []>(),
+	mapToPartialDomainObject: jest.fn<Partial<T>, [S]>(),
+	mapToHydratedDomainObject: jest.fn<T, [S]>()
+};
+
 class TestId extends AbstractUuidId {}
 class TestQueryService extends MongooseQueryService<T, S> {
-	protected mapToDomainObjectData(document: S): T {
-		return {
-			id: new TestId(document._id)
-		};
-	}
-	protected model = (testModel as unknown) as Model<S, {}>;
+	protected model = (testModel as unknown) as MongooseQueryModel<T, S>;
 }
 const queryService = new TestQueryService();
 const thenValueMock = jest.fn();
@@ -69,17 +68,27 @@ describe("MongooseQueryService", () => {
 		singleMockFunction.mockReturnThis();
 		thenValueMock.mockReset();
 		thenValueMock.mockReturnValue(new Array<Document>());
+		testModel.mapToPartialDomainObject.mockReset();
+		testModel.mapToPartialDomainObject.mockImplementation(
+			(document: S): Partial<T> => {
+				return {
+					id: new TestId(document._id)
+				};
+			}
+		);
+		testModel.mapToHydratedDomainObject.mockReset();
 	});
 
 	it("#query should call model.find with no arguments", async () => {
-		givenEmptyObjectQuery();
+		givenEmptyQuery();
 		await whenQuerying();
 		thenModelFindHasBeenCalledWithNoArguments();
 	});
 
-	function givenEmptyObjectQuery() {
+	function givenEmptyQuery() {
 		queryObject = {
-			filters: List<ReadonlyFilter>()
+			filters: List<ReadonlyFilter>(),
+			hydrate: false
 		};
 	}
 
@@ -105,7 +114,8 @@ describe("MongooseQueryService", () => {
 			}
 		];
 		queryObject = {
-			filters: List(filters)
+			filters: List(filters),
+			hydrate: false
 		};
 	}
 
@@ -115,7 +125,7 @@ describe("MongooseQueryService", () => {
 	}
 
 	it("#query should not call returned query.where if there is not where in filters", async () => {
-		givenEmptyObjectQuery();
+		givenEmptyQuery();
 		await whenQuerying();
 		thenQueryWhereHasNotBeenCalled();
 	});
@@ -142,7 +152,8 @@ describe("MongooseQueryService", () => {
 			}
 		];
 		queryObject = {
-			filters: List(filters)
+			filters: List(filters),
+			hydrate: false
 		};
 	}
 
@@ -193,7 +204,8 @@ describe("MongooseQueryService", () => {
 			}
 		];
 		queryObject = {
-			filters: List(filters)
+			filters: List(filters),
+			hydrate: false
 		};
 	}
 
@@ -228,7 +240,7 @@ describe("MongooseQueryService", () => {
 	});
 
 	function givenEmptyQueryObjectAndQueryResolvingToEmptyArray() {
-		givenEmptyObjectQuery();
+		givenEmptyQuery();
 		thenValueMock.mockReset();
 		foundDocuments = new Array<S>();
 		thenValueMock.mockReturnValueOnce(foundDocuments);
@@ -239,14 +251,12 @@ describe("MongooseQueryService", () => {
 	}
 
 	it("#query should return List with same size and order as Array query resolve to", async () => {
-		givenEmptyObjectQueryAndQueryResolvingToNotEmptyArray();
-		await whenQuerying();
+		givenEmptyQuery();
+		await whenQueryingAndResponseIsNotEmpty();
 		thenReturnedListMatchesThatArray();
 	});
 
-	function givenEmptyObjectQueryAndQueryResolvingToNotEmptyArray() {
-		givenEmptyObjectQuery();
-		thenValueMock.mockReset();
+	async function whenQueryingAndResponseIsNotEmpty() {
 		foundDocuments = [
 			{ _id: UuidGenerator.generateAsString() },
 			{ _id: UuidGenerator.generateAsString() },
@@ -254,7 +264,9 @@ describe("MongooseQueryService", () => {
 			{ _id: UuidGenerator.generateAsString() },
 			{ _id: UuidGenerator.generateAsString() }
 		] as Array<S>;
+		thenValueMock.mockReset();
 		thenValueMock.mockReturnValueOnce(foundDocuments);
+		returnedList = await queryService.query(queryObject);
 	}
 
 	function thenReturnedListMatchesThatArray() {
@@ -263,5 +275,59 @@ describe("MongooseQueryService", () => {
 		returnedList.forEach((object, index) => {
 			if (object.id) expect(object.id.toString()).toBe(foundDocuments[index]._id);
 		});
+	}
+
+	it("#query should call model.mapToPartialDomainObject if query.hydrate == false", async () => {
+		givenEmptyQueryWithHydrateOptionFalse();
+		await whenQueryingAndResponseIsNotEmpty();
+		thenModelMapToPartialDomainObjectHasBeenCalled();
+	});
+
+	function givenEmptyQueryWithHydrateOptionFalse() {
+		queryObject = {
+			filters: List<ReadonlyFilter>(),
+			hydrate: false
+		};
+	}
+
+	function thenModelMapToPartialDomainObjectHasBeenCalled() {
+		expect(testModel.mapToPartialDomainObject).toHaveBeenCalled();
+	}
+
+	it("#query should not call model.mapToHydratedDomainObject if query.hydrate == false", async () => {
+		givenEmptyQueryWithHydrateOptionFalse();
+		await whenQueryingAndResponseIsNotEmpty();
+		thenModelMapToHydratedDomainObjectHasNotBeenCalled();
+	});
+
+	function thenModelMapToHydratedDomainObjectHasNotBeenCalled() {
+		expect(testModel.mapToHydratedDomainObject).not.toHaveBeenCalled();
+	}
+
+	it("query should call model.mapToHydratedDomainObject if query.hydrate == true", async () => {
+		givenEmptyQueryWithHydrateOptionTrue();
+		await whenQueryingAndResponseIsNotEmpty();
+		thenModelMapToHydratedDomainObjectHasBeenCalled();
+	});
+
+	function givenEmptyQueryWithHydrateOptionTrue() {
+		queryObject = {
+			filters: List<ReadonlyFilter>(),
+			hydrate: true
+		};
+	}
+
+	function thenModelMapToHydratedDomainObjectHasBeenCalled() {
+		expect(testModel.mapToHydratedDomainObject).toHaveBeenCalled();
+	}
+
+	it("query should not call model.mapToPartialDomainObject if query.hydrate == true", async () => {
+		givenEmptyQueryWithHydrateOptionTrue();
+		await whenQueryingAndResponseIsNotEmpty();
+		thenModelMapToPartialDomainObjectHasNotBeenCalled();
+	});
+
+	function thenModelMapToPartialDomainObjectHasNotBeenCalled() {
+		expect(testModel.mapToPartialDomainObject).not.toHaveBeenCalled();
 	}
 });

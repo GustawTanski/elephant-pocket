@@ -5,52 +5,48 @@ export interface GenericFilter<T> {
 	name: "gt" | "equals" | "gte" | "lt" | "lte";
 	value: T;
 }
-
 export interface StringFilter {
 	name: "where";
 	value: string;
 }
-
 export type Filter<T> = StringFilter | GenericFilter<T>;
 export type ReadonlyFilter = Readonly<Filter<any>>;
 
 export default class MongoDBQueryBuilder {
-	private collectionName: string;
 	private filters: List<ReadonlyFilter> = List<ReadonlyFilter>();
+	private hydrateOption: boolean = false;
 
-	static create(collectionName: string): MongoDBQueryBuilder {
-		return new MongoDBQueryBuilder(collectionName);
+	static create(): MongoDBQueryBuilder {
+		return new MongoDBQueryBuilder();
 	}
 
-	private constructor(collectionName: string) {
-		this.collectionName = collectionName;
-	}
+	private constructor() {}
 
 	where(propertyName: string): this {
 		this.addFilter({ name: "where", value: propertyName });
 		return this;
 	}
 
-	gt<T>(value: T): this {
+	gt(value: any): this {
 		this.addFilter({ name: "gt", value });
 		return this;
 	}
 
-	lt<T>(value: T): this {
+	lt(value: any): this {
 		this.addFilter({ name: "lt", value });
 		return this;
 	}
-	gte<T>(value: T): this {
+	gte(value: any): this {
 		this.addFilter({ name: "gte", value });
 		return this;
 	}
 
-	lte<T>(value: T): this {
+	lte(value: any): this {
 		this.addFilter({ name: "lte", value });
 		return this;
 	}
 
-	equals<T>(value: T): this {
+	equals(value: any): this {
 		this.addFilter({ name: "equals", value });
 		return this;
 	}
@@ -62,7 +58,12 @@ export default class MongoDBQueryBuilder {
 	build(): Readonly<QueryObject> {
 		return {
 			filters: this.filters,
-			collectionName: this.collectionName
+			hydrate: this.hydrateOption
 		};
+	}
+
+	hydrate(): this {
+		this.hydrateOption = true;
+		return this;
 	}
 }

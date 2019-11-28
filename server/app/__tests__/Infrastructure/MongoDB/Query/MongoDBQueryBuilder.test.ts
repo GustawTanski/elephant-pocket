@@ -4,48 +4,30 @@ import MongoDBQueryBuilder, {
 } from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
 import QueryObject from "../../../../src/Infrastructure/MongoDB/Query/QueryObject";
 
-let collectionName: string;
+const defaultFilter: ReadonlyFilter = {
+	name: "where",
+	value: ""
+};
+
 let builder: MongoDBQueryBuilder;
 let propertyName: string;
 let number: number;
 let query: Readonly<QueryObject>;
 let filterData: ReadonlyFilter[];
-const defaultFilter: ReadonlyFilter = {
-	name: "where",
-	value: ""
-};
+
 describe("MongoDBQueryBuilder", () => {
-	it(".create should return instanceof builder with collection name saved", () => {
-		givenCollectionName();
-		whenCreating();
-		thenBuilderHasSavedCollectionName();
-	});
-
-	function givenCollectionName() {
-		collectionName = "users";
-	}
-
-	function whenCreating() {
-		builder = MongoDBQueryBuilder.create(collectionName);
-	}
-
-	function thenBuilderHasSavedCollectionName() {
-		expect(builder["collectionName"]).toBe(collectionName);
-	}
-
 	it("#where should add 'where' filter ", () => {
-		givenCollectionNameAndPropertyName();
+		givenPropertyName();
 		whenAddingWhereFilter();
 		thenWhereFilterIsInTheFilters();
 	});
 
-	function givenCollectionNameAndPropertyName() {
-		givenCollectionName();
+	function givenPropertyName() {
 		propertyName = "name";
 	}
 
 	function whenAddingWhereFilter() {
-		builder = MongoDBQueryBuilder.create(collectionName).where(propertyName);
+		builder = MongoDBQueryBuilder.create().where(propertyName);
 	}
 
 	function thenWhereFilterIsInTheFilters() {
@@ -61,19 +43,18 @@ describe("MongoDBQueryBuilder", () => {
 	it.each<GenericFilter<any>["name"]>(["gt", "lt", "lte", "gte", "equals"])(
 		"#%s should add matching filter",
 		filterName => {
-			givenCollectionNameAndNumber();
+			givenNumber();
 			whenAddingFilter(filterName);
 			thenInTheFiltersIs(filterName);
 		}
 	);
 
-	function givenCollectionNameAndNumber() {
-		givenCollectionName();
+	function givenNumber() {
 		number = 23.5;
 	}
 
 	function whenAddingFilter(filterName: GenericFilter<any>["name"]) {
-		builder = MongoDBQueryBuilder.create(collectionName)[filterName](number);
+		builder = MongoDBQueryBuilder.create()[filterName](number);
 	}
 
 	function thenInTheFiltersIs(filterName: GenericFilter<any>["name"]) {
@@ -82,13 +63,12 @@ describe("MongoDBQueryBuilder", () => {
 	}
 
 	it("#build should return query with empty filters when use after create only", () => {
-		givenCollectionName();
 		whenBuildingWithoutFilters();
 		thenQueryObjectHasNotAnyFilters();
 	});
 
 	function whenBuildingWithoutFilters() {
-		query = MongoDBQueryBuilder.create(collectionName).build();
+		query = MongoDBQueryBuilder.create().build();
 	}
 
 	function thenQueryObjectHasNotAnyFilters() {
@@ -102,7 +82,6 @@ describe("MongoDBQueryBuilder", () => {
 	});
 
 	function givenCollectionNameAndFourFilterData() {
-		collectionName = "dogs";
 		filterData = [
 			{
 				name: "where",
@@ -124,7 +103,7 @@ describe("MongoDBQueryBuilder", () => {
 	}
 
 	function whenBuildingWithManyFilters() {
-		builder = MongoDBQueryBuilder.create(collectionName);
+		builder = MongoDBQueryBuilder.create();
 		query = filterData
 			.reduce((builder, filter) => {
 				if (filter.name == "where") return builder.where(filter.value);
@@ -138,5 +117,33 @@ describe("MongoDBQueryBuilder", () => {
 			const queryFilter = query.filters.get(index, defaultFilter);
 			expect(filter).toStrictEqual(queryFilter);
 		});
+	}
+
+	it("#build should return query with hydrate == false if #hydrate hasn't been called", () => {
+		whenBuildingWithoutHydrate();
+		thenReturnedQueryHasHydratePropertyFalse();
+	});
+
+	function whenBuildingWithoutHydrate() {
+		query = MongoDBQueryBuilder.create().build();
+	}
+
+	function thenReturnedQueryHasHydratePropertyFalse() {
+		expect(query.hydrate).toBe(false);
+	}
+
+	it("#build should return query with hydrate == true if #hydrate has been called", () => {
+		whenBuildingWithHydrate();
+		thenReturnedQueryHasHydratePropertyTrue();
+	});
+
+	function whenBuildingWithHydrate() {
+		query = MongoDBQueryBuilder.create()
+			.hydrate()
+			.build();
+	}
+
+	function thenReturnedQueryHasHydratePropertyTrue() {
+		expect(query.hydrate).toBe(true);
 	}
 });
