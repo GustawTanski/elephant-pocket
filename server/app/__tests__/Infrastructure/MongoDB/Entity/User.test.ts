@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { UserModel, UserMapper } from "../../../../src/Infrastructure/MongoDB/Model/User";
+import { UserModel, UserMapper } from "../../../../src/Infrastructure/MongoDB/Entity/User";
 import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 import User from "../../../../src/Core/Component/User/Domain/User/User";
 

@@ -1,6 +1,6 @@
-import DomainObject from "../../../Core/Port/DomainObject";
+import DomainObject from "../../../../Core/Port/DomainObject";
 import { Document, Model } from "mongoose";
-import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
+import AppRuntimeError from "../../../../Core/SharedKernel/Error/AppRuntimeError";
 
 export interface MongoosePersistenceModel<T extends DomainObject, S extends Document> {
 	mapToDocument: (domainObject: T) => S;
@@ -12,9 +12,8 @@ export interface MongoosePersistenceModel<T extends DomainObject, S extends Docu
 export default abstract class AbstractMongoosePersistenceModel<T extends DomainObject, S extends Document>
 	implements MongoosePersistenceModel<T, S> {
 	protected abstract model: Model<S, {}>;
-
+	
 	abstract mapToDocument(domainObject: T): S;
-
 	abstract mapToDocumentProperties(domainObject: T): {};
 
 	async findById(id: T["id"]): Promise<S | null> {

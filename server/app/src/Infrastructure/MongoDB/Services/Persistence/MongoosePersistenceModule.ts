@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
-import DomainObject from "../../../Core/Port/DomainObject";
-import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
+import DomainObject from "../../../../Core/Port/DomainObject";
+import AppRuntimeError from "../../../../Core/SharedKernel/Error/AppRuntimeError";
 import { MongoosePersistenceModel } from "../Model/AbstractMongoosePersistenceModel";
 
 export interface MongoosePersistenceModule<T extends DomainObject> {

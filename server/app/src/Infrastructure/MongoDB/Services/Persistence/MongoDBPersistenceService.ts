@@ -1,5 +1,5 @@
-import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
-import DomainObject from "../../../Core/Port/DomainObject";
+import AppRuntimeError from "../../../../Core/SharedKernel/Error/AppRuntimeError";
+import DomainObject from "../../../../Core/Port/DomainObject";
 import { MongoosePersistenceModule } from "./MongoosePersistenceModule";
 
 export default class MongoDBPersistenceService<T extends DomainObject> {

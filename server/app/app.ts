@@ -8,7 +8,7 @@ import cors from "cors";
 import UserRESTAPI from "./src/UserInterface/REST/Endpoints/UserRESTAPI";
 import UserService from "./src/Core/Component/User/Aplication/Service/UserService";
 import UserRepository from "./src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
-import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/Persistence/MongoDBUserPersistenceService";
+import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/Entity/MongoDBUserPersistenceService";
 import crypter from "./lib/ts-extension/src/Encryption/crypter";
 import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
 import DailyLimitBudget from "./src/Core/Component/Budget/Domain/Budget/DailyLimitBudget";

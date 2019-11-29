@@ -1,13 +1,12 @@
-import MongooseQueryService, {
-	MongooseQueryModel
-} from "../../../../src/Infrastructure/MongoDB/Query/MongooseQueryService";
-import DomainObject from "../../../../src/Core/Port/DomainObject";
+import MongooseQueryService from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongooseQueryService";
+import DomainObject from "../../../../../src/Core/Port/DomainObject";
 import { Document, Query } from "mongoose";
 import { List } from "immutable";
-import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
-import UuidGenerator from "../../../../lib/ts-extension/src/Uuid/UuidGenerator";
-import { ReadonlyFilter } from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
-import QueryObject from "../../../../src/Infrastructure/MongoDB/Query/QueryObject";
+import AbstractUuidId from "../../../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import UuidGenerator from "../../../../../lib/ts-extension/src/Uuid/UuidGenerator";
+import { ReadonlyFilter } from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongoDBQueryBuilder";
+import QueryObject from "../../../../../src/Infrastructure/MongoDB/Services/Query/QueryObject";
+import { MongooseQueryModel } from "../../../../../src/Infrastructure/MongoDB/Services/Model/AbstractMongooseQueryModel";
 
 type T = DomainObject;
 type S = Document;
@@ -19,10 +18,10 @@ const testModel = {
 };
 
 class TestId extends AbstractUuidId {}
-class TestQueryService extends MongooseQueryService<T, S> {
-	protected model = (testModel as unknown) as MongooseQueryModel<T, S>;
-}
-const queryService = new TestQueryService();
+
+const queryService = new MongooseQueryService<T, S>(
+	(testModel as unknown) as MongooseQueryModel<T, S>
+);
 const thenValueMock = jest.fn();
 const queryMock = {
 	where: jest.fn<Query<S[]>, [string]>(),

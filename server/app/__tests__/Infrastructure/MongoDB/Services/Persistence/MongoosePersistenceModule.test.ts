@@ -1,9 +1,9 @@
-import MongoosePersistenceModuleImp from "../../../../src/Infrastructure/MongoDB/Persistence/MongoosePersistenceModule";
-import DomainObject from "../../../../src/Core/Port/DomainObject";
-import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import MongoosePersistenceModuleImp from "../../../../../src/Infrastructure/MongoDB/Services/Persistence/MongoosePersistenceModule";
+import DomainObject from "../../../../../src/Core/Port/DomainObject";
+import AbstractUuidId from "../../../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import { Document } from "mongoose";
-import { MongoosePersistenceModel } from "../../../../src/Infrastructure/MongoDB/Model/AbstractMongoosePersistenceModel";
-import AppRuntimeError from "../../../../src/Core/SharedKernel/Error/AppRuntimeError";
+import { MongoosePersistenceModel } from "../../../../../src/Infrastructure/MongoDB/Services/Model/AbstractMongoosePersistenceModel";
+import AppRuntimeError from "../../../../../src/Core/SharedKernel/Error/AppRuntimeError";
 
 type T = DomainObject;
 type S = Document;

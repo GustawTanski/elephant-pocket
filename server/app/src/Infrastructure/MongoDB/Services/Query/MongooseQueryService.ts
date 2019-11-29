@@ -1,17 +1,16 @@
-import DomainObject from "../../../Core/Port/DomainObject";
+import DomainObject from "../../../../Core/Port/DomainObject";
 import { Document, Query } from "mongoose";
 import { List } from "immutable";
 import { ReadonlyFilter } from "./MongoDBQueryBuilder";
 import QueryObject from "./QueryObject";
+import { MongooseQueryModel } from "../Model/AbstractMongooseQueryModel";
 
-export interface MongooseQueryModel<T extends DomainObject, S extends Document> {
-	find(): Query<S[]>;
-	mapToHydratedDomainObject(document: S): T;
-	mapToPartialDomainObject(document: S): Partial<T>;
-}
+export default class MongooseQueryService<T extends DomainObject, S extends Document> {
+	private model: MongooseQueryModel<T, S>;
 
-export default abstract class MongooseQueryService<T extends DomainObject, S extends Document> {
-	protected abstract model: MongooseQueryModel<T, S>;
+	constructor(model: MongooseQueryModel<T, S>) {
+		this.model = model;
+	}
 
 	async query(queryObject: QueryObject): Promise<List<T | Partial<T>>> {
 		let query = this.model.find();

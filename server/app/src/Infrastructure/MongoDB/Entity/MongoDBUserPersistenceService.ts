@@ -1,5 +1,5 @@
 import User from "../../../Core/Component/User/Domain/User/User";
-import { UserModel, UserMapper, IUserDocument } from "../Model/User";
+import { UserModel, UserMapper, IUserDocument } from "./User";
 import IPersistanceService from "../../../Core/Port/Persistence/PersistanceServiceInterface";
 import UserId from "../../../Core/SharedKernel/Component/User/Domain/User/UserId";
 import IQuery from "../../../Core/Port/Persistence/QueryPortInterface";

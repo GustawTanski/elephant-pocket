@@ -1,7 +1,7 @@
-import MongoDBPersistenceService from "../../../../src/Infrastructure/MongoDB/Persistence/MongoDBPersistenceService";
-import AbstractUuidId from "../../../../lib/ts-extension/src/Identity/AbstractUuidId";
-import AppRuntimeError from "../../../../src/Core/SharedKernel/Error/AppRuntimeError";
-import DomainObject from "../../../../src/Core/Port/DomainObject";
+import MongoDBPersistenceService from "../../../../../src/Infrastructure/MongoDB/Services/Persistence/MongoDBPersistenceService";
+import AbstractUuidId from "../../../../../lib/ts-extension/src/Identity/AbstractUuidId";
+import AppRuntimeError from "../../../../../src/Core/SharedKernel/Error/AppRuntimeError";
+import DomainObject from "../../../../../src/Core/Port/DomainObject";
 
 class TestId extends AbstractUuidId {}
 const testModule = {

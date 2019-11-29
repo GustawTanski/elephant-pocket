@@ -1,7 +1,7 @@
-import AbstractMongoosePersistenceModel from "../AbstractMongoosePersistenceModel";
 import Budget from "../../../../Core/Component/Budget/Domain/Budget/Budget";
 import { BudgetDocument, BudgetSchema, BudgetDocumentInput } from "./BudgetSchema";
-import { model } from "mongoose";
+import { model, Model } from "mongoose";
+import AbstractMongoosePersistenceModel from "../../Services/Model/AbstractMongoosePersistenceModel";
 
 export default class BudgetPersistenceModel extends AbstractMongoosePersistenceModel<Budget, BudgetDocument> {
 	protected model = model<BudgetDocument>("Budget", BudgetSchema);

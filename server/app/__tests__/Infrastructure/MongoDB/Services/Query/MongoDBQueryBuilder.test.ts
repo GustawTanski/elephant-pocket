@@ -1,8 +1,8 @@
 import MongoDBQueryBuilder, {
 	ReadonlyFilter,
 	GenericFilter
-} from "../../../../src/Infrastructure/MongoDB/Query/MongoDBQueryBuilder";
-import QueryObject from "../../../../src/Infrastructure/MongoDB/Query/QueryObject";
+} from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongoDBQueryBuilder";
+import QueryObject from "../../../../../src/Infrastructure/MongoDB/Services/Query/QueryObject";
 
 const defaultFilter: ReadonlyFilter = {
 	name: "where",

@@ -4,11 +4,11 @@ import DateRange from "../../../../../lib/ts-extension/src/DateRange/DateRange";
 import {
 	BudgetDocument,
 	BudgetDocumentInput
-} from "../../../../../src/Infrastructure/MongoDB/Model/Budget/BudgetSchema";
-import BudgetPersistenceModel from "../../../../../src/Infrastructure/MongoDB/Model/Budget/BudgetPersistenceModel";
+} from "../../../../../src/Infrastructure/MongoDB/Entity/Budget/BudgetSchema";
+import BudgetPersistenceModel from "../../../../../src/Infrastructure/MongoDB/Entity/Budget/BudgetPersistenceModel";
 
 class TestBudget extends Budget {
-	readonly type = "STRING";
+	readonly type = "TEST";
 }
 
 const budgetModel = new BudgetPersistenceModel();
@@ -36,10 +36,10 @@ describe("BudgetModel ", () => {
 	}
 
 	function thenDocumentMatchesBudget() {
-		expect(document).toMatchObject(objectFromBudgetToMatch());
+		expect(document).toMatchObject(getObjectToMatchFromBudget());
 	}
 
-	function objectFromBudgetToMatch() {
+	function getObjectToMatchFromBudget() {
 		return {
 			ownerId: budget.ownerId.toString(),
 			dateRange: {
@@ -55,8 +55,8 @@ describe("BudgetModel ", () => {
 
 	it("#mapToDocumentProperties should return matching serialized plain object", () => {
 		givenBudget();
-        whenMappingToDocumentProperties();
-        thenDocumentPropertiesMatchesBudget();
+		whenMappingToDocumentProperties();
+		thenDocumentPropertiesMatchesBudget();
 	});
 
 	function whenMappingToDocumentProperties() {
@@ -64,6 +64,6 @@ describe("BudgetModel ", () => {
 	}
 
 	function thenDocumentPropertiesMatchesBudget() {
-		expect(documentProperties).toMatchObject(objectFromBudgetToMatch());
+		expect(documentProperties).toMatchObject(getObjectToMatchFromBudget());
 	}
 });
