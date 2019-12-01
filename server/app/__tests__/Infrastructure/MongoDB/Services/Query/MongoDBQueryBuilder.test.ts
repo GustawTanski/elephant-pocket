@@ -1,8 +1,9 @@
-import MongoDBQueryBuilder, {
+import MongoDBQueryObject from "../../../../../src/Core/Port/Persistence/MongoDB/MongoDBQueryObjectPort";
+import MongoDBQueryBuilder from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongoDBQueryBuilder";
+import {
 	ReadonlyFilter,
 	GenericFilter
-} from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongoDBQueryBuilder";
-import QueryObject from "../../../../../src/Infrastructure/MongoDB/Services/Query/QueryObject";
+} from "../../../../../src/Core/Port/Persistence/MongoDB/MongoDBQueryFilterPort";
 
 const defaultFilter: ReadonlyFilter = {
 	name: "where",
@@ -12,7 +13,7 @@ const defaultFilter: ReadonlyFilter = {
 let builder: MongoDBQueryBuilder;
 let propertyName: string;
 let number: number;
-let query: Readonly<QueryObject>;
+let query: Readonly<MongoDBQueryObject>;
 let filterData: ReadonlyFilter[];
 
 describe("MongoDBQueryBuilder", () => {

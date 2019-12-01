@@ -1,18 +1,20 @@
 import DomainObject from "../../../../Core/Port/DomainObject";
 import { Document, Query } from "mongoose";
 import { List } from "immutable";
-import { ReadonlyFilter } from "./MongoDBQueryBuilder";
-import QueryObject from "./QueryObject";
+import MongoDBQueryObject from "../../../../Core/Port/Persistence/MongoDB/MongoDBQueryObjectPort";
 import { MongooseQueryModel } from "../Model/AbstractMongooseQueryModel";
+import QueryService from "../../../../Core/Port/Persistence/QueryServicePort";
+import { ReadonlyFilter } from "../../../../Core/Port/Persistence/MongoDB/MongoDBQueryFilterPort";
 
-export default class MongooseQueryService<T extends DomainObject, S extends Document> {
+export default class MongooseQueryService<T extends DomainObject, S extends Document>
+	implements QueryService<T> {
 	private model: MongooseQueryModel<T, S>;
 
 	constructor(model: MongooseQueryModel<T, S>) {
 		this.model = model;
 	}
 
-	async query(queryObject: QueryObject): Promise<List<T | Partial<T>>> {
+	async query(queryObject: MongoDBQueryObject): Promise<List<T | Partial<T>>> {
 		let query = this.model.find();
 		query = this.executeFilters(queryObject.filters, query);
 		const documents: S[] = await query;

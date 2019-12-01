@@ -1,10 +1,10 @@
-import IUserRepository from "../../../../../../src/Core/Component/User/Aplication/Repository/UserRepositoryInterface";
+import UserRepository from "../../../../../../src/Core/Component/User/Aplication/Repository/UserRepositoryInterface";
 import User from "../../../../../../src/Core/Component/User/Domain/User/User";
 import UserId from "../../../../../../src/Core/SharedKernel/Component/User/Domain/User/UserId";
 import EmptyQueryError from "../../../../../../src/Core/Port/Persistence/Error/EmptyQueryError";
 import AppRuntimeError from "../../../../../../src/Core/SharedKernel/Error/AppRuntimeError";
 
-export default class MockedUserRepository implements IUserRepository {
+export default class MockedUserRepository implements UserRepository {
 	async save(user: User): Promise<void> {
 		const persistedUserIndex = this.users.findIndex(persistedUser =>
 			persistedUser.id.equals(user.id)

@@ -1,33 +1,17 @@
-import IUserRepository from "../UserRepositoryInterface";
+import UserRepository from "../UserRepositoryInterface";
 import User from "../../../Domain/User/User";
-import IPersistanceService from "../../../../../Port/Persistence/PersistanceServiceInterface";
 import UserId from "../../../../../SharedKernel/Component/User/Domain/User/UserId";
 
-export default class UserRepository implements IUserRepository {
-	private persistanceService: IPersistanceService<User>;
-
-	constructor(persistanceService: IPersistanceService<User>) {
-		this.persistanceService = persistanceService;
+export default class UserRepositoryImp implements UserRepository {
+	async save(user: User): Promise<void> {}
+	async delete(userId: UserId): Promise<void> {}
+	async findOneByEmail(email: string): Promise<User> {
+		return (undefined as unknown) as User;
 	}
-	async save(user: User): Promise<void> {
-		await this.persistanceService.save(user);
-		return;
+	async findAll(): Promise<User[]> {
+		return (undefined as unknown) as User[];
 	}
-
-	async delete(id: UserId): Promise<void> {
-		await this.persistanceService.delete(id);
-		return;
-	}
-
-	findOneByEmail(email: string): Promise<User> {
-		return this.persistanceService.findByEmail(email);
-	}
-
-	findOneById(id: UserId): Promise<User> {
-		return this.persistanceService.findById(id);
-	}
-
-	findAll(): Promise<User[]> {
-		return this.persistanceService.findAll();
+	async findOneById(id: UserId): Promise<User> {
+		return (undefined as unknown) as User;
 	}
 }

@@ -1,23 +1,14 @@
 import { List } from "immutable";
-import QueryObject from "./QueryObject";
+import MongoDBQueryObject from "../../../../Core/Port/Persistence/MongoDB/MongoDBQueryObjectPort";
+import { ReadonlyFilter } from "../../../../Core/Port/Persistence/MongoDB/MongoDBQueryFilterPort";
+import { MongoDBQueryBuilder } from "../../../../Core/Port/Persistence/MongoDB/MongoDBQueryBuilderPort";
 
-export interface GenericFilter<T> {
-	name: "gt" | "equals" | "gte" | "lt" | "lte";
-	value: T;
-}
-export interface StringFilter {
-	name: "where";
-	value: string;
-}
-export type Filter<T> = StringFilter | GenericFilter<T>;
-export type ReadonlyFilter = Readonly<Filter<any>>;
-
-export default class MongoDBQueryBuilder {
+export default class MongoDBQueryBuilderImp implements MongoDBQueryBuilder {
 	private filters: List<ReadonlyFilter> = List<ReadonlyFilter>();
 	private hydrateOption: boolean = false;
 
-	static create(): MongoDBQueryBuilder {
-		return new MongoDBQueryBuilder();
+	static create(): MongoDBQueryBuilderImp {
+		return new MongoDBQueryBuilderImp();
 	}
 
 	private constructor() {}
@@ -55,7 +46,7 @@ export default class MongoDBQueryBuilder {
 		this.filters = this.filters.push(filter);
 	}
 
-	build(): Readonly<QueryObject> {
+	build(): Readonly<MongoDBQueryObject> {
 		return {
 			filters: this.filters,
 			hydrate: this.hydrateOption

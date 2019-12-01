@@ -4,9 +4,9 @@ import { Document, Query } from "mongoose";
 import { List } from "immutable";
 import AbstractUuidId from "../../../../../lib/ts-extension/src/Identity/AbstractUuidId";
 import UuidGenerator from "../../../../../lib/ts-extension/src/Uuid/UuidGenerator";
-import { ReadonlyFilter } from "../../../../../src/Infrastructure/MongoDB/Services/Query/MongoDBQueryBuilder";
-import QueryObject from "../../../../../src/Infrastructure/MongoDB/Services/Query/QueryObject";
+import MongoDBQueryObject from "../../../../../src/Core/Port/Persistence/MongoDB/MongoDBQueryObjectPort";
 import { MongooseQueryModel } from "../../../../../src/Infrastructure/MongoDB/Services/Model/AbstractMongooseQueryModel";
+import { ReadonlyFilter } from "../../../../../src/Core/Port/Persistence/MongoDB/MongoDBQueryFilterPort";
 
 type T = DomainObject;
 type S = Document;
@@ -49,7 +49,7 @@ const defaultFilter: ReadonlyFilter = {
 	value: ""
 };
 
-let queryObject: QueryObject;
+let queryObject: MongoDBQueryObject;
 let returnedList: List<Partial<T>>;
 let foundDocuments: Array<Document>;
 

@@ -1,4 +1,4 @@
-import { AbstractMongooseQueryModel } from "../../../../../src/Infrastructure/MongoDB/Services/Model/AbstractMongooseQueryModel";
+import AbstractMongooseQueryModel from "../../../../../src/Infrastructure/MongoDB/Services/Model/AbstractMongooseQueryModel";
 import DomainObject from "../../../../../src/Core/Port/DomainObject";
 import { Document, Query, Model } from "mongoose";
 

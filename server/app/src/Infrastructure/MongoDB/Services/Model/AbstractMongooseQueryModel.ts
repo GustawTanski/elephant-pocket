@@ -7,7 +7,7 @@ export interface MongooseQueryModel<T extends DomainObject, S extends Document> 
 	mapToPartialDomainObject(document: S): Partial<T>;
 }
 
-export abstract class AbstractMongooseQueryModel<T extends DomainObject, S extends Document>
+export default abstract class AbstractMongooseQueryModel<T extends DomainObject, S extends Document>
 	implements MongooseQueryModel<T, S> {
 	protected abstract model: Model<S, {}>;
     

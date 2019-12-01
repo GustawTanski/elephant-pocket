@@ -1,4 +1,4 @@
-import IUserRepository from "../Repository/UserRepositoryInterface";
+import UserRepository from "../Repository/UserRepositoryInterface";
 import NewUserDTO from "../DTO/NewUserDTO";
 import UserDTOMapper from "../DTO/UserDTOMapper";
 import IUserService from "../../../../Port/Service/User/UserServiceInterface";
@@ -14,9 +14,9 @@ import INewUserDTO from "../../../../Port/Service/User/NewUserDTOInterface";
 import IPersistedUserDTO from "../../../../Port/Service/User/PersistedUserDTOInterface";
 
 export default class UserService implements IUserService {
-	private repository: IUserRepository;
+	private repository: UserRepository;
 	private crypter: IUserSecretCrypter;
-	constructor(repository: IUserRepository, crypter: IUserSecretCrypter) {
+	constructor(repository: UserRepository, crypter: IUserSecretCrypter) {
 		this.repository = repository;
 		this.crypter = crypter;
 	}

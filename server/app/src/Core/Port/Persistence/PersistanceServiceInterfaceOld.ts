@@ -1,5 +1,5 @@
 import DomainObject from "../DomainObject";
-import IQuery from "./QueryPortInterface";
+import IQuery from "./QueryPortInterfaceOld";
 
 export default interface IPersistanceService<T extends DomainObject> {
 	save: (entity: T) => Promise<T>;

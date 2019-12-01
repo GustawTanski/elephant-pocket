@@ -3,7 +3,7 @@ import request from "supertest";
 process.env.JWT_SECRET = "testSecret";
 
 import UserService from "../../../src/Core/Component/User/Aplication/Service/UserService";
-import UserRepository from "../../../src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
+import UserRepositoryImp from "../../../src/Core/Component/User/Aplication/Repository/MongoDB/UserRepositoryOld";
 import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/Entity/MongoDBUserPersistenceService";
 import crypter from "../../../lib/ts-extension/src/Encryption/crypter";
 import {
@@ -15,7 +15,7 @@ import LoginRESTAPI from "../../../src/UserInterface/REST/Endpoints/Login/LoginR
 import jwt from "../../../src/UserInterface/REST/JWT/jwt";
 
 const mongoDBUserPersistanceService = new MongoDBUserPersistanceService();
-const userRepository = new UserRepository(mongoDBUserPersistanceService);
+const userRepository = new UserRepositoryImp(mongoDBUserPersistanceService);
 const userService = new UserService(userRepository, crypter);
 const loginRESTAPI = new LoginRESTAPI(userService);
 const app = express();

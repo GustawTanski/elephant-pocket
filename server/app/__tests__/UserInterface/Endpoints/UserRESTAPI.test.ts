@@ -4,7 +4,7 @@ process.env.JWT_SECRET = "testSecret";
 
 import UserRESTAPI from "../../../src/UserInterface/REST/Endpoints/UserRESTAPI";
 import UserService from "../../../src/Core/Component/User/Aplication/Service/UserService";
-import UserRepository from "../../../src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
+import UserRepositoryImp from "../../../src/Core/Component/User/Aplication/Repository/MongoDB/UserRepositoryOld";
 import MongoDBUserPersistanceService from "../../../src/Infrastructure/MongoDB/Entity/MongoDBUserPersistenceService";
 import crypter from "../../../lib/ts-extension/src/Encryption/crypter";
 import { mongoBeforeAll, mongoAfterAll } from "../../Infrastructure/MongoDB/Services/mongoDBTestHelper";
@@ -14,7 +14,7 @@ import jwt from "../../../src/UserInterface/REST/JWT/jwt";
 import EmptyQueryError from "../../../src/Core/Port/Persistence/Error/EmptyQueryError";
 
 const mongoDBUserPersistanceService = new MongoDBUserPersistanceService();
-const userRepository = new UserRepository(mongoDBUserPersistanceService);
+const userRepository = new UserRepositoryImp(mongoDBUserPersistanceService);
 const userService = new UserService(userRepository, crypter);
 const userRESTAPI = new UserRESTAPI(userService);
 const app = express();

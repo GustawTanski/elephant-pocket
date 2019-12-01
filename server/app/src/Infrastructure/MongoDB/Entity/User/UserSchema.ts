@@ -28,22 +28,3 @@ export interface UserDocumentInput {
 	name?: UserDocument["name"];
 	_id: UserDocument["_id"];
 }
-
-// export const UserMapper = {
-// 	toDocumentProperties(user: User): IUserDocumentProperties {
-// 		return {
-// 			name: user.name,
-// 			_id: user.id.toString(),
-// 			email: user.email,
-// 			password: user.password
-// 		};
-// 	},
-// 	toDomainObject(user: IUserDocument): User {
-// 		return new User({
-// 			name: user.name,
-// 			id: user._id,
-// 			email: user.email,
-// 			password: user.password
-// 		});
-// 	}
-// };

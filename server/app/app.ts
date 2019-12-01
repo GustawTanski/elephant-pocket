@@ -7,7 +7,7 @@ import { MongoError } from "mongodb";
 import cors from "cors";
 import UserRESTAPI from "./src/UserInterface/REST/Endpoints/UserRESTAPI";
 import UserService from "./src/Core/Component/User/Aplication/Service/UserService";
-import UserRepository from "./src/Core/Component/User/Aplication/Repository/MongoDB/UserRepository";
+import UserRepositoryImp from "./src/Core/Component/User/Aplication/Repository/MongoDB/UserRepositoryOld";
 import MongoDBUserPersistanceService from "./src/Infrastructure/MongoDB/Entity/MongoDBUserPersistenceService";
 import crypter from "./lib/ts-extension/src/Encryption/crypter";
 import LoginRESTAPI from "./src/UserInterface/REST/Endpoints/Login/LoginRESTAPI";
@@ -28,7 +28,7 @@ app.get("/", function bareGet(req, res) {
 });
 
 const persistanceService = new MongoDBUserPersistanceService();
-const userRepository = new UserRepository(persistanceService);
+const userRepository = new UserRepositoryImp(persistanceService);
 const userService = new UserService(userRepository, crypter);
 const userAPI = new UserRESTAPI(userService);
 const loginAPI = new LoginRESTAPI(userService);

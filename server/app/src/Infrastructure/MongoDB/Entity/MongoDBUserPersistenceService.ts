@@ -1,8 +1,8 @@
 import User from "../../../Core/Component/User/Domain/User/User";
 import { UserModel, UserMapper, IUserDocument } from "./User";
-import IPersistanceService from "../../../Core/Port/Persistence/PersistanceServiceInterface";
+import IPersistanceService from "../../../Core/Port/Persistence/PersistanceServiceInterfaceOld";
 import UserId from "../../../Core/SharedKernel/Component/User/Domain/User/UserId";
-import IQuery from "../../../Core/Port/Persistence/QueryPortInterface";
+import IQuery from "../../../Core/Port/Persistence/QueryPortInterfaceOld";
 import EmptyQueryError from "../../../Core/Port/Persistence/Error/EmptyQueryError";
 import AppRuntimeError from "../../../Core/SharedKernel/Error/AppRuntimeError";
 
