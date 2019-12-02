@@ -1,4 +1,4 @@
-import { Schema, Document, model } from "mongoose";
+import { Schema, Document } from "mongoose";
 import UuidGenerator from "../../../../../lib/ts-extension/src/Uuid/UuidGenerator";
 
 export interface UserDocument extends Document {

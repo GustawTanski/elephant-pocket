@@ -7,18 +7,19 @@ export default class UserPersistenceModel extends AbstractMongoosePersistenceMod
 	User,
 	UserDocument
 > {
-	protected model = model<UserDocument>("User", UserSchema);
+	protected Model = model<UserDocument>("User", UserSchema);
 
 	mapToDocument(user: User): UserDocument {
-		return new this.model(this.mapToDocumentProperties(user));
+		return new this.Model(this.mapToDocumentProperties(user));
 	}
 
-	mapToDocumentProperties(user: User): UserDocumentInput {
+	mapToDocumentProperties({ name, id, email, password }: User): UserDocumentInput {
+		const _id = id.toString();
 		return {
-			name: user.name,
-			_id: user.id.toString(),
-			email: user.email,
-			password: user.password
+			name,
+			_id,
+			email,
+			password
 		};
 	}
 }

@@ -10,7 +10,7 @@ const testModel = {
 };
 
 class TestMongooseQueryModel extends AbstractMongooseQueryModel<T, S> {
-	protected model = (testModel as unknown) as Model<S, {}>;
+	protected Model = (testModel as unknown) as Model<S, {}>;
 	mapToHydratedDomainObject() {
 		return (undefined as unknown) as T;
 	}

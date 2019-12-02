@@ -11,17 +11,17 @@ export interface MongoosePersistenceModel<T extends DomainObject, S extends Docu
 
 export default abstract class AbstractMongoosePersistenceModel<T extends DomainObject, S extends Document>
 	implements MongoosePersistenceModel<T, S> {
-	protected abstract model: Model<S, {}>;
+	protected abstract Model: Model<S, {}>;
 	
 	abstract mapToDocument(domainObject: T): S;
 	abstract mapToDocumentProperties(domainObject: T): {};
 
 	async findById(id: T["id"]): Promise<S | null> {
-		return await this.model.findById(id);
+		return await this.Model.findById(id);
 	}
 
 	async delete(id: T["id"]): Promise<void> {
-		const documentOrNull: S | null = await this.model.findByIdAndDelete(id);
+		const documentOrNull: S | null = await this.Model.findByIdAndDelete(id);
 		if (documentOrNull === null) this.throwNoObjectToDeleteError(id);
 	}
 

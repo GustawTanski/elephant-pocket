@@ -23,7 +23,7 @@ class TestMongooseModel extends AbstractMongoosePersistenceModel<T, S> {
 		return mapToDocumentProperties(domainObject);
 	}
 
-	protected model = (model as unknown) as Model<S, {}>;
+	protected Model = (model as unknown) as Model<S, {}>;
 }
 
 class TestId extends AbstractUuidId {}
