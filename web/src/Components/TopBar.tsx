@@ -1,8 +1,8 @@
-import React, { Component, ReactChild } from "react";
-import * as S from "./styles";
+import React, { Component } from "react";
+
+import * as S from "./styled";
 import Navigation from "./Navigation";
 import Logo from "./Logo";
-
 
 export default class TopBar extends Component {
     render() {
