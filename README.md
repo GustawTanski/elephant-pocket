@@ -1,6 +1,6 @@
 # elephant-pocket
 
-ElephantPocket — app for managing home budget.
+ElephantPocket — app for managing home budget. Demo available [here](https://elephant-pocket.surge.sh/).
 
 ## Project cancelled
 
