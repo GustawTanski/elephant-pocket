@@ -13,3 +13,4 @@ This project has been launched in educational purposes only. I've started it abo
 - React
 - Redux
 - Mongoose
+- styled-components
